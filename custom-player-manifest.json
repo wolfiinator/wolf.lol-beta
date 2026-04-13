@@ -53,6 +53,42 @@
       ]
     },
     {
+      "name": "frank ocean",
+      "folder": "music/frank ocean",
+      "tracks": [
+        {
+          "file": "chanel/chanel.mp3",
+          "title": "chanel",
+          "cover": "chanel/images (1).jpeg"
+        },
+        {
+          "file": "close to you/close to you.mp3",
+          "title": "close to you",
+          "cover": "close to you/IMG_5957.PNG"
+        },
+        {
+          "file": "good guy/good guy.mp3",
+          "title": "good guy",
+          "cover": "good guy/IMG_5957.PNG"
+        },
+        {
+          "file": "ivy/ivy.mp3",
+          "title": "ivy",
+          "cover": "ivy/images (1).jpeg"
+        },
+        {
+          "file": "seigfried/seigfried.mp3",
+          "title": "seigfried",
+          "cover": "seigfried/IMG_5957.PNG"
+        },
+        {
+          "file": "white Ferrari/white ferrari.mp3",
+          "title": "white ferrari",
+          "cover": "white Ferrari/IMG_5957.PNG"
+        }
+      ]
+    },
+    {
       "name": "indigo de souza",
       "folder": "music/indigo de souza",
       "tracks": [
@@ -75,6 +111,17 @@
       ]
     },
     {
+      "name": "lsd and the search for god",
+      "folder": "music/lsd and the search for god",
+      "tracks": [
+        {
+          "file": "starting over/starting over.mp3",
+          "title": "starting over",
+          "cover": "starting over/IMG_5954.JPG"
+        }
+      ]
+    },
+    {
       "name": "montell fish",
       "folder": "music/montell fish",
       "tracks": [
@@ -87,6 +134,27 @@
           "file": "i destroy myself for you/i destroy myself for you..mp3",
           "title": "i destroy myself for you",
           "cover": "i destroy myself for you/1200x1200bf-60.jpg"
+        }
+      ]
+    },
+    {
+      "name": "olivia rodrigo",
+      "folder": "music/olivia rodrigo",
+      "tracks": [
+        {
+          "file": "1 step forward, 3 steps back/1 step forward, 3 steps back.mp3",
+          "title": "1 step forward, 3 steps back",
+          "cover": "1 step forward, 3 steps back/IMG_5955.JPG"
+        },
+        {
+          "file": "enough for you/enough for you.mp3",
+          "title": "enough for you",
+          "cover": "enough for you/IMG_5955.JPG"
+        },
+        {
+          "file": "making the bed/making the bed.mp3",
+          "title": "making the bed",
+          "cover": "making the bed/IMG_5956.JPG"
         }
       ]
     },
