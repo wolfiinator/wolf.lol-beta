@@ -5,11 +5,6 @@
       "folder": "music/aimware, novoline, kxrrvpt",
       "tracks": [
         {
-          "file": "dot/..mp3",
-          "title": "",
-          "cover": "dot/Screenshot 2026-04-12 043259.png"
-        },
-        {
           "file": "someday/someday..mp3",
           "title": "someday",
           "cover": "someday/Screenshot 2026-04-12 043259.png"
@@ -18,6 +13,22 @@
           "file": "these eyes will be/these eyes will be..mp3",
           "title": "these eyes will be",
           "cover": "these eyes will be/Screenshot 2026-04-12 043259.png"
+        }
+      ]
+    },
+    {
+      "name": "frank ocean",
+      "folder": "music/frank ocean",
+      "tracks": [
+        {
+          "file": "chanel/Frank Ocean - Chanel.mp3",
+          "title": "Frank Ocean Chanel",
+          "cover": "chanel/images (1).jpeg"
+        },
+        {
+          "file": "ivy/Frank Ocean - Ivy.mp3",
+          "title": "Frank Ocean Ivy",
+          "cover": "ivy/images (1).jpeg"
         }
       ]
     },
