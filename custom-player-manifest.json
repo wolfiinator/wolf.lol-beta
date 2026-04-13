@@ -194,9 +194,19 @@
           "cover": "alibi/sombr-alibi-artwork.jpg"
         },
         {
+          "file": "fine/fine.mp3",
+          "title": "fine",
+          "cover": "fine/IMG_5959.JPG"
+        },
+        {
           "file": "i'll remember tonight/i'll remember tonight.mp3",
           "title": "i'll remember tonight",
           "cover": "i'll remember tonight/ab67616d0000b2739700056d1b4955a3a4f0b909.jpeg"
+        },
+        {
+          "file": "my house is warm/my house is warm.mp3",
+          "title": "my house is warm",
+          "cover": "my house is warm/ab67616d0000b273bf9e550240d34d95c1f3f4b0.jpeg"
         },
         {
           "file": "never find u/never find u.mp3",
