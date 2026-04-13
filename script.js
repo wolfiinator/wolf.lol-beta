@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreHomeView = document.getElementById('more-home-view');
   const moreMusicView = document.getElementById('more-music-view');
   const moreInterestsView = document.getElementById('more-interests-view');
+  const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
   const musicArtistSelectView = document.getElementById('music-artist-select-view');
   const musicArtistPlayerView = document.getElementById('music-artist-player-view');
   const musicArtistListNode = document.getElementById('music-artist-list');
@@ -54,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const moreMusicBackButton = document.getElementById('more-music-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
+  const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
   const musicListNode = document.getElementById('music-list');
   const musicNowPlayingNode = document.getElementById('music-now-playing');
   const musicCoverNode = document.getElementById('music-cover');
@@ -77,9 +79,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const socialIcons = document.querySelectorAll('.social-link-btn');
   const badges = document.querySelectorAll('.badge');
   const interestTabs = document.querySelectorAll('.interest-tab');
+  const interestCharacterTabs = document.querySelectorAll('.interest-character-tab');
+  const interestsNextPageButton = document.getElementById('interests-next-page');
   const interestImage = document.getElementById('interest-image');
   const interestName = document.getElementById('interest-name');
   const interestDescription = document.getElementById('interest-description');
+  const interestCharacterImage = document.getElementById('interest-character-image');
+  const interestCharacterName = document.getElementById('interest-character-name');
+  const interestCharacterDescription = document.getElementById('interest-character-description');
   const minimizedHud = document.getElementById('minimized-hud');
   const minimizedName = document.getElementById('minimized-name');
   const minimizedViews = document.getElementById('minimized-views');
@@ -114,6 +121,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       image: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/The_Bad_Guys_2_%282025%29_teaser_poster.jpg/250px-The_Bad_Guys_2_%282025%29_teaser_poster.jpg',
       alt: 'The Bad Guys 2 teaser poster',
       description: 'The reformed crew gets pulled back into the action when a new all-female criminal team forces them into one more globe-trotting heist.'
+    }
+  };
+
+  const characterInterestsContent = {
+    'mr-wolf': {
+      name: 'Mr. Wolf (The Bad Guys)',
+      image: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/00/The_Bad_Guys_poster.jpeg/250px-The_Bad_Guys_poster.jpeg',
+      alt: 'The Bad Guys poster featuring Mr. Wolf',
+      description: 'Mr. Wolf is cool under pressure and always ten steps ahead. I like how he balances mastermind energy with real loyalty, and how his growth turns him into someone who leads with heart.'
+    },
+    legoshi: {
+      name: 'Legoshi (Beastars)',
+      image: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/BEASTARS%2C_volume_1.jpg/250px-BEASTARS%2C_volume_1.jpg',
+      alt: 'Beastars volume one cover featuring Legoshi',
+      description: 'Legoshi is quiet, gentle, and intense in a way that feels real. His story about self-control and identity makes him one of the most memorable characters in Beastars.'
+    },
+    jack: {
+      name: 'Jack (Beastars)',
+      image: 'https://static.wikia.nocookie.net/beastars-eng/images/6/6b/Volume_18.png',
+      alt: 'Beastars volume 18 cover featuring Legoshi and Jack',
+      description: 'Jack is dependable, warm, and genuinely kind, and he brings balance to Legoshi when things get dark. Their friendship is one of the strongest parts of the whole series.'
     }
   };
 
@@ -1069,7 +1097,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (openMoreInterestsButton) {
-    openMoreInterestsButton.addEventListener('click', () => showMoreSubview(moreInterestsView));
+    openMoreInterestsButton.addEventListener('click', () => {
+      showMoreSubview(moreInterestsView);
+      updateInterestTab('beastars');
+    });
   }
 
   if (moreMusicBackButton) {
@@ -1081,6 +1112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (moreInterestsBackButton) {
     moreInterestsBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
+  }
+
+  if (moreInterestsCharactersBackButton) {
+    moreInterestsCharactersBackButton.addEventListener('click', () => showMoreSubview(moreInterestsView));
   }
 
   function updateInterestTab(interestKey) {
@@ -1115,6 +1150,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       tab.classList.toggle('active', isActive);
       tab.setAttribute('aria-selected', String(isActive));
     });
+
+    if (interestsNextPageButton) {
+      interestsNextPageButton.classList.toggle('is-visible', interestKey === 'the-bad-guys-2');
+    }
+  }
+
+  function updateCharacterInterestTab(interestKey) {
+    const interest = characterInterestsContent[interestKey];
+    if (!interest || !interestCharacterImage || !interestCharacterName || !interestCharacterDescription) return;
+    const applyInterest = () => {
+      interestCharacterImage.src = interest.image;
+      interestCharacterImage.alt = interest.alt;
+      interestCharacterName.textContent = interest.name;
+      interestCharacterDescription.textContent = interest.description;
+      const interestItem = interestCharacterImage.closest('.interest-item');
+      if (interestItem) {
+        gsap.fromTo(interestItem, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' });
+      }
+    };
+
+    const interestItem = interestCharacterImage.closest('.interest-item');
+    if (interestItem) {
+      gsap.to(interestItem, {
+        autoAlpha: 0,
+        y: -6,
+        duration: 0.15,
+        ease: 'power2.in',
+        onComplete: applyInterest
+      });
+    } else {
+      applyInterest();
+    }
+
+    interestCharacterTabs.forEach((tab) => {
+      const isActive = tab.dataset.characterInterest === interestKey;
+      tab.classList.toggle('active', isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
   }
 
   interestTabs.forEach((tab) => {
@@ -1125,7 +1198,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  interestCharacterTabs.forEach((tab) => {
+    tab.addEventListener('click', () => updateCharacterInterestTab(tab.dataset.characterInterest));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateCharacterInterestTab(tab.dataset.characterInterest);
+    });
+  });
+
+  if (interestsNextPageButton) {
+    interestsNextPageButton.addEventListener('click', () => {
+      showMoreSubview(moreInterestsCharactersView);
+      updateCharacterInterestTab('mr-wolf');
+    });
+  }
+
   updateInterestTab('beastars');
+  updateCharacterInterestTab('mr-wolf');
   renderArtistList();
   showMusicArtistList();
   refreshPlayPauseButton();
