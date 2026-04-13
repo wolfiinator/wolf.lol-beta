@@ -17,18 +17,38 @@
       ]
     },
     {
-      "name": "frank ocean",
-      "folder": "music/frank ocean",
+      "name": "clairo",
+      "folder": "music/clairo",
       "tracks": [
         {
-          "file": "chanel/Frank Ocean - Chanel.mp3",
-          "title": "Frank Ocean Chanel",
-          "cover": "chanel/images (1).jpeg"
+          "file": "bags/bags.mp3",
+          "title": "bags",
+          "cover": "bags/IMG_5951.JPG"
         },
         {
-          "file": "ivy/Frank Ocean - Ivy.mp3",
-          "title": "Frank Ocean Ivy",
-          "cover": "ivy/images (1).jpeg"
+          "file": "bubble gum/bubble gum.mp3",
+          "title": "bubble gum",
+          "cover": "bubble gum/IMG_5950.JPG"
+        },
+        {
+          "file": "how - demo/how (demo).mp3",
+          "title": "how (demo)",
+          "cover": "how - demo/IMG_5952.JPG"
+        },
+        {
+          "file": "love songs/love songs.mp3",
+          "title": "love songs",
+          "cover": "love songs/IMG_5953.JPG"
+        },
+        {
+          "file": "management/management.mp3",
+          "title": "management",
+          "cover": "management/IMG_5949.JPG"
+        },
+        {
+          "file": "Sofia/sofia.mp3",
+          "title": "sofia",
+          "cover": "Sofia/IMG_5951.JPG"
         }
       ]
     },
