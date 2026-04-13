@@ -35,7 +35,13 @@
     {
       "name": "indigo de souza",
       "folder": "music/indigo de souza",
-      "tracks": []
+      "tracks": [
+        {
+          "file": "sleep talking/Sleep Talking-Indigo de souza [audio].mp3",
+          "title": "Sleep Talking Indigo de souza [audio]",
+          "cover": "sleep talking/artworks-000148181111-e02q6u-t1080x1080.jpg"
+        }
+      ]
     },
     {
       "name": "jian",
