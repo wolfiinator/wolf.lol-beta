@@ -1138,6 +1138,67 @@
             text-align: center;
         }
 
+        .auth-gate {
+            margin-top: 16px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 16px;
+            min-width: 320px;
+            backdrop-filter: blur(8px);
+        }
+
+        .auth-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .domain-pill {
+            font-size: 13px;
+            color: #9ad5ff;
+            margin-bottom: 8px;
+        }
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .editor-panel label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .editor-panel input {
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(0, 0, 0, 0.45);
+            color: white;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .editor-note {
+            opacity: 0.7;
+            font-size: 11px;
+        }
+
         
         @media (max-width: 430px) {
             
@@ -1356,6 +1417,15 @@
     
     <div id="start-screen">
         <div id="start-text"></div>
+        <div id="auth-gate" class="auth-gate hidden">
+            <p id="domain-pill" class="domain-pill"></p>
+            <p id="auth-status">Loading profile...</p>
+            <div class="auth-actions">
+                <button id="login-button" class="results-toggle" type="button">Log in with Google</button>
+                <button id="claim-button" class="results-toggle" type="button">Claim this domain</button>
+                <button id="enter-button" class="results-toggle" type="button" disabled>Enter</button>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -1377,6 +1447,7 @@
         <div id="profile-block">
             <div class="card-actions">
                 <button id="minimize-profile" class="results-toggle" type="button">Minimize</button>
+                <button id="open-editor" class="results-toggle hidden" type="button">Edit</button>
                 <button id="open-more" class="results-toggle">More</button>
             </div>
             <div class="profile-header">
@@ -1386,7 +1457,7 @@
                 <div class="profile-info">
                     <div class="name-and-badges">
                         <div id="profile-name">wolf.</div>
-                        <div class="badge-box">
+                        <div class="badge-box hidden" id="badge-box">
                             <div class="badge-box-inner">
                                 <div class="badge-group">
                                     <div class="badge-container">
@@ -1415,6 +1486,20 @@
             </div>
 
             <div class="bio-separator"></div>
+
+            <div id="editor-panel" class="editor-panel hidden">
+                <h3>Profile Editor</h3>
+                <label>Display name <input id="editor-name" type="text" maxlength="32"></label>
+                <label>Profile picture URL <input id="editor-avatar" type="url" placeholder="https://..."></label>
+                <label>Background URL (image or mp4) <input id="editor-background" type="url" placeholder="https://..."></label>
+                <label>Bio #1 <input id="editor-bio-1" type="text" maxlength="120"></label>
+                <label>Bio #2 <input id="editor-bio-2" type="text" maxlength="120"></label>
+                <div class="editor-actions">
+                    <button id="save-editor" class="results-toggle" type="button">Save</button>
+                    <button id="close-editor" class="results-toggle" type="button">Close</button>
+                </div>
+                <p class="editor-note">Badges are not live yet (Discord sync coming later).</p>
+            </div>
 
             <div class="profile-footer">
 
@@ -1611,6 +1696,19 @@
     <audio id="music-player" loop preload="metadata"></audio>
     <audio id="album-player" preload="metadata"></audio>
 
+    <script>
+      window.WOLFLOL_FIREBASE_CONFIG = {
+        apiKey: "REPLACE_ME",
+        authDomain: "REPLACE_ME.firebaseapp.com",
+        projectId: "REPLACE_ME",
+        storageBucket: "REPLACE_ME.appspot.com",
+        messagingSenderId: "REPLACE_ME",
+        appId: "REPLACE_ME"
+      };
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 

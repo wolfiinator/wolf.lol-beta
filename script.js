@@ -31,6 +31,12 @@ function initMedia() {
 document.addEventListener('DOMContentLoaded', async () => {
   const startScreen = document.getElementById('start-screen');
   const startText = document.getElementById('start-text');
+  const authGate = document.getElementById('auth-gate');
+  const authStatus = document.getElementById('auth-status');
+  const domainPill = document.getElementById('domain-pill');
+  const loginButton = document.getElementById('login-button');
+  const claimButton = document.getElementById('claim-button');
+  const enterButton = document.getElementById('enter-button');
   const profileName = document.getElementById('profile-name');
   const profileBio = document.getElementById('profile-bio');
   const visitorCount = document.getElementById('visitor-count');
@@ -41,7 +47,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openMoreButton = document.getElementById('open-more');
   const closeMoreButton = document.getElementById('close-more');
   const minimizeProfileButton = document.getElementById('minimize-profile');
+  const openEditorButton = document.getElementById('open-editor');
   const maximizeProfileButton = document.getElementById('maximize-profile');
+  const editorPanel = document.getElementById('editor-panel');
+  const closeEditorButton = document.getElementById('close-editor');
+  const saveEditorButton = document.getElementById('save-editor');
+  const editorNameInput = document.getElementById('editor-name');
+  const editorAvatarInput = document.getElementById('editor-avatar');
+  const editorBackgroundInput = document.getElementById('editor-background');
+  const editorBio1Input = document.getElementById('editor-bio-1');
+  const editorBio2Input = document.getElementById('editor-bio-2');
   const moreHomeView = document.getElementById('more-home-view');
   const moreMusicView = document.getElementById('more-music-view');
   const moreInterestsView = document.getElementById('more-interests-view');
@@ -314,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
 
-  const startMessage = "wolf.lol";
+  const startMessage = "claim your wolf.lol domain + log in";
   let startTextContent = '';
   let startIndex = 0;
   let startCursorVisible = true;
@@ -544,107 +559,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-
-  startScreen.addEventListener('click', () => {
+  let hasEnteredProfile = false;
+  function enterProfile() {
+    if (hasEnteredProfile) return;
+    hasEnteredProfile = true;
     startScreen.classList.add('hidden');
     currentAudio.muted = false;
     currentAudio.play().catch(err => {
-      console.error("Failed to play music after start screen click:", err);
+      console.error("Failed to play music after entering profile:", err);
     });
     profileBlock.classList.remove('hidden');
     gsap.fromTo(profileBlock,
       { opacity: 0, y: -50 },
-      { opacity: 1, y: 0, duration: 1, ease: 'power2.out', onComplete: () => {
-        profileBlock.classList.add('profile-appear');
-        
-      }}
+      { opacity: 1, y: 0, duration: 1, ease: 'power2.out', onComplete: () => profileBlock.classList.add('profile-appear') }
     );
     if (!isTouchDevice) {
       try {
-        new cursorTrailEffect({
-          length: 10,
-          size: 8,
-          speed: 0.2
-        });
-        console.log("Cursor trail initialized");
+        new cursorTrailEffect({ length: 10, size: 8, speed: 0.2 });
       } catch (err) {
         console.error("Failed to initialize cursor trail effect:", err);
       }
     }
-    typeWriterName();
     typeWriterBio();
-  });
-
-  startScreen.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    startScreen.classList.add('hidden');
-    currentAudio.muted = false;
-    currentAudio.play().catch(err => {
-      console.error("Failed to play music after start screen touch:", err);
-    });
-    profileBlock.classList.remove('hidden');
-    gsap.fromTo(profileBlock,
-      { opacity: 0, y: -50 },
-      { opacity: 1, y: 0, duration: 1, ease: 'power2.out', onComplete: () => {
-        profileBlock.classList.add('profile-appear');
-        
-      }}
-    );
-    if (!isTouchDevice) {
-      try {
-        new cursorTrailEffect({
-          length: 10,
-          size: 8,
-          speed: 0.2
-        });
-        console.log("Cursor trail initialized");
-      } catch (err) {
-        console.error("Failed to initialize cursor trail effect:", err);
-      }
-    }
-    typeWriterName();
-    typeWriterBio();
-  });
-
-
-  const name = "wolf.";
-  let nameText = '';
-  let nameIndex = 0;
-  let isNameDeleting = false;
-  let nameCursorVisible = true;
-
-  function typeWriterName() {
-    if (!isNameDeleting && nameIndex < name.length) {
-      nameText = name.slice(0, nameIndex + 1);
-      nameIndex++;
-    } else if (isNameDeleting && nameIndex > 0) {
-      nameText = name.slice(0, nameIndex - 1);
-      nameIndex--;
-    } else if (nameIndex === name.length) {
-      isNameDeleting = true;
-      setTimeout(typeWriterName, 10000);
-      return;
-    } else if (nameIndex === 0) {
-      isNameDeleting = false;
-    }
-    profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
-    if (Math.random() < 0.1) {
-      profileName.classList.add('glitch');
-      setTimeout(() => profileName.classList.remove('glitch'), 200);
-    }
-    setTimeout(typeWriterName, isNameDeleting ? 150 : 300);
   }
 
-  setInterval(() => {
-    nameCursorVisible = !nameCursorVisible;
-    profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
-  }, 500);
+  if (enterButton) {
+    enterButton.addEventListener('click', enterProfile);
+  }
 
+  let profileData = {
+    name: "wolf.",
+    avatar: "assets/profile.gif",
+    background: "assets/background.mp4",
+    bio1: "love yall.",
+    bio2: "the best oat."
+  };
 
-  const bioMessages = [
-    "love yall.",
-    "the best oat."
-  ];
+  function applyBackground(url) {
+    if (!url) return;
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
+    const source = backgroundVideo.querySelector('source');
+    if (isVideo && source) {
+      source.src = url;
+      backgroundVideo.load();
+      backgroundVideo.classList.remove('hidden');
+      document.body.classList.remove('video-fallback');
+      backgroundVideo.play().catch(() => {});
+      return;
+    }
+    backgroundVideo.classList.add('hidden');
+    document.body.classList.add('video-fallback');
+    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.75)), url('${url}')`;
+  }
+
+  function applyProfileData() {
+    profileName.textContent = profileData.name || 'wolf.';
+    profilePicture.src = profileData.avatar || 'assets/profile.gif';
+    applyBackground(profileData.background);
+    bioMessages = [profileData.bio1 || '', profileData.bio2 || ''].filter(Boolean);
+    if (bioMessages.length === 0) bioMessages = [''];
+    if (editorNameInput) editorNameInput.value = profileData.name || '';
+    if (editorAvatarInput) editorAvatarInput.value = profileData.avatar || '';
+    if (editorBackgroundInput) editorBackgroundInput.value = profileData.background || '';
+    if (editorBio1Input) editorBio1Input.value = profileData.bio1 || '';
+    if (editorBio2Input) editorBio2Input.value = profileData.bio2 || '';
+  }
+
+  let bioMessages = ["love yall.", "the best oat."];
   let bioText = '';
   let bioIndex = 0;
   let bioMessageIndex = 0;
@@ -678,6 +659,125 @@ document.addEventListener('DOMContentLoaded', async () => {
     bioCursorVisible = !bioCursorVisible;
     profileBio.textContent = bioText + (bioCursorVisible ? '|' : ' ');
   }, 500);
+
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const claimedDomain = pathParts[pathParts.length - 1] || '1';
+  if (domainPill) {
+    domainPill.textContent = `domain: wolf.lol/${claimedDomain}`;
+  }
+
+  let authUser = null;
+  let canEditProfile = false;
+  let profileDocRef = null;
+  let firestore = null;
+
+  async function loadProfileFromDb() {
+    if (!profileDocRef) return;
+    const snapshot = await profileDocRef.get();
+    if (snapshot.exists) {
+      const saved = snapshot.data();
+      profileData = { ...profileData, ...saved };
+      applyProfileData();
+      canEditProfile = authUser && saved.ownerUid === authUser.uid;
+      authStatus.textContent = canEditProfile ? 'Logged in as owner.' : 'Domain is already claimed.';
+    } else {
+      authStatus.textContent = authUser ? 'This domain is unclaimed. Click claim.' : 'Log in and claim this domain.';
+      canEditProfile = false;
+    }
+    if (openEditorButton) {
+      openEditorButton.classList.toggle('hidden', !canEditProfile);
+    }
+    enterButton.disabled = false;
+  }
+
+  async function saveProfile() {
+    if (!profileDocRef || !canEditProfile) return;
+    profileData = {
+      ...profileData,
+      name: editorNameInput.value.trim(),
+      avatar: editorAvatarInput.value.trim(),
+      background: editorBackgroundInput.value.trim(),
+      bio1: editorBio1Input.value.trim(),
+      bio2: editorBio2Input.value.trim()
+    };
+    await profileDocRef.set({
+      ...profileData,
+      ownerUid: authUser.uid,
+      domain: claimedDomain,
+      updatedAt: Date.now()
+    }, { merge: true });
+    applyProfileData();
+    authStatus.textContent = 'Profile saved.';
+  }
+
+  function initFirebaseAuth() {
+    const config = window.WOLFLOL_FIREBASE_CONFIG;
+    const isConfigured = config && config.projectId && config.projectId !== 'REPLACE_ME';
+    if (!isConfigured || !window.firebase) {
+      authStatus.textContent = 'Firebase config missing. Add keys in index.html.';
+      enterButton.disabled = false;
+      return;
+    }
+
+    firebase.initializeApp(config);
+    const auth = firebase.auth();
+    firestore = firebase.firestore();
+    profileDocRef = firestore.collection('profiles').doc(claimedDomain);
+
+    auth.onAuthStateChanged(async (user) => {
+      authUser = user;
+      loginButton.textContent = user ? 'Log out' : 'Log in with Google';
+      await loadProfileFromDb();
+    });
+
+    loginButton.addEventListener('click', async () => {
+      if (auth.currentUser) {
+        await auth.signOut();
+        return;
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await auth.signInWithPopup(provider);
+    });
+
+    claimButton.addEventListener('click', async () => {
+      if (!auth.currentUser) {
+        authStatus.textContent = 'Please log in first.';
+        return;
+      }
+      const snap = await profileDocRef.get();
+      if (snap.exists && snap.data().ownerUid !== auth.currentUser.uid) {
+        authStatus.textContent = 'This domain is owned by another user.';
+        return;
+      }
+      await profileDocRef.set({
+        ...profileData,
+        ownerUid: auth.currentUser.uid,
+        domain: claimedDomain,
+        createdAt: snap.exists ? snap.data().createdAt : Date.now(),
+        updatedAt: Date.now()
+      }, { merge: true });
+      await loadProfileFromDb();
+    });
+  }
+
+  if (authGate) {
+    authGate.classList.remove('hidden');
+  }
+  applyProfileData();
+  initFirebaseAuth();
+
+  if (openEditorButton) {
+    openEditorButton.addEventListener('click', () => editorPanel.classList.remove('hidden'));
+  }
+  if (closeEditorButton) {
+    closeEditorButton.addEventListener('click', () => editorPanel.classList.add('hidden'));
+  }
+  if (saveEditorButton) {
+    saveEditorButton.addEventListener('click', async () => {
+      await saveProfile();
+      editorPanel.classList.add('hidden');
+    });
+  }
 
 
   let currentAudio = musicPlayer;
