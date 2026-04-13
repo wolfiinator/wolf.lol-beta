@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     },
     jack: {
       name: 'Jack (Beastars)',
-      image: 'https://static.wikia.nocookie.net/beastars-eng/images/6/6b/Volume_18.png',
+      image: 'https://static.wikia.nocookie.net/beastars-eng/images/6/6b/Volume_18.png/revision/latest?cb=20230905042407',
       alt: 'Beastars volume 18 cover featuring Legoshi and Jack',
       description: 'Jack is dependable, warm, and genuinely kind, and he brings balance to Legoshi when things get dark. Their friendship is one of the strongest parts of the whole series.'
     }
@@ -334,25 +334,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 500);
 
 
-  async function initializeVisitorCounter() {
-    const fallbackBase = 7922;
-    try {
-      const response = await fetch('https://api.countapi.xyz/hit/wolf-lol/profile-views', { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`Count API failed with ${response.status}`);
-      }
-      const data = await response.json();
-      const count = Number.isFinite(data?.value) ? data.value : fallbackBase;
-      visitorCount.textContent = count.toLocaleString();
-      if (minimizedViews) {
-        minimizedViews.textContent = `views: ${visitorCount.textContent}`;
-      }
-    } catch (error) {
-      console.error('Failed to load remote visitor count:', error);
-      visitorCount.textContent = fallbackBase.toLocaleString();
-      if (minimizedViews) {
-        minimizedViews.textContent = `views: ${visitorCount.textContent}`;
-      }
+  function initializeVisitorCounter() {
+    const fixedViewCount = 192729;
+    visitorCount.textContent = fixedViewCount.toLocaleString();
+    if (minimizedViews) {
+      minimizedViews.textContent = `views: ${visitorCount.textContent}`;
     }
   }
 
