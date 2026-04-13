@@ -35,7 +35,13 @@
     {
       "name": "jian",
       "folder": "music/jian",
-      "tracks": []
+      "tracks": [
+        {
+          "file": "goodbye song/Goodbye Song.mp3",
+          "title": "Goodbye Song",
+          "cover": "goodbye song/400x400bb.jpg"
+        }
+      ]
     },
     {
       "name": "montell fish",
