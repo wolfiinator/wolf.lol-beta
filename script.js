@@ -273,9 +273,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   const cursor = document.querySelector('.custom-cursor');
+  const useCustomCursor = false;
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-  if (isTouchDevice) {
+  if (useCustomCursor && cursor && isTouchDevice) {
     document.body.classList.add('touch-device');
     
     document.addEventListener('touchstart', (e) => {
@@ -295,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('touchend', () => {
       cursor.style.display = 'none'; 
     });
-  } else {
+  } else if (useCustomCursor && cursor) {
 
     document.addEventListener('mousemove', (e) => {
       cursor.style.left = e.clientX + 'px';

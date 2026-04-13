@@ -19,7 +19,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   perspective: 1000px;
-  cursor: none;
+  cursor: auto;
 }
 
 
@@ -33,6 +33,7 @@ body {
   z-index: 10000;
   transition: transform 0.1s ease-out;
   filter: hue-rotate(var(--cursor-hue, 0deg)); 
+  display: none;
 }
 
 
