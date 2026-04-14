@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const skillsBlock = document.getElementById('skills-block');
   const profilePicture = document.querySelector('.profile-picture');
   const profileContainer = document.querySelector('.profile-container');
+  const profileLedString = document.querySelector('.profile-led-string');
+  const profileLedBulbs = document.querySelectorAll('.profile-led-bulb');
   const socialIcons = document.querySelectorAll('.social-link-btn');
   const badges = document.querySelectorAll('.badge');
   const interestTabs = document.querySelectorAll('.interest-tab');
@@ -345,6 +347,59 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   initializeVisitorCounter();
+
+  const ledPhysics = {
+    targetX: 0,
+    targetY: 0,
+    targetRotate: 0,
+    x: 0,
+    y: 0,
+    rotate: 0,
+    vx: 0,
+    vy: 0,
+    vr: 0
+  };
+
+  let ledPhysicsAnimationId = null;
+
+  function updateLedPhysics() {
+    if (!profileLedString) {
+      return;
+    }
+
+    const spring = 0.14;
+    const damping = 0.8;
+
+    ledPhysics.vx += (ledPhysics.targetX - ledPhysics.x) * spring;
+    ledPhysics.vy += (ledPhysics.targetY - ledPhysics.y) * spring;
+    ledPhysics.vr += (ledPhysics.targetRotate - ledPhysics.rotate) * spring;
+
+    ledPhysics.vx *= damping;
+    ledPhysics.vy *= damping;
+    ledPhysics.vr *= damping;
+
+    ledPhysics.x += ledPhysics.vx;
+    ledPhysics.y += ledPhysics.vy;
+    ledPhysics.rotate += ledPhysics.vr;
+
+    profileLedString.style.setProperty('--led-x', `${ledPhysics.x.toFixed(2)}px`);
+    profileLedString.style.setProperty('--led-y', `${ledPhysics.y.toFixed(2)}px`);
+    profileLedString.style.setProperty('--led-rotate', `${ledPhysics.rotate.toFixed(2)}deg`);
+
+    if (profileLedBulbs.length) {
+      const swayAmount = Math.max(-5, Math.min(5, ledPhysics.rotate * -0.45 + ledPhysics.vy * 1.8));
+      profileLedBulbs.forEach((bulb, index) => {
+        const wobble = Math.sin((performance.now() / 220) + index * 0.65) * 0.8;
+        bulb.style.setProperty('--string-sway', `${(swayAmount + wobble).toFixed(2)}px`);
+      });
+    }
+
+    ledPhysicsAnimationId = requestAnimationFrame(updateLedPhysics);
+  }
+
+  if (profileLedString) {
+    ledPhysicsAnimationId = requestAnimationFrame(updateLedPhysics);
+  }
 
   function updateProfileClock() {
     const time = new Date().toLocaleTimeString('en-US', {
@@ -898,6 +953,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       ease: 'power2.out',
       transformPerspective: 1000
     });
+
+    if (element === profileBlock && profileLedString) {
+      ledPhysics.targetX = tiltY * 0.45;
+      ledPhysics.targetY = tiltX * 0.35;
+      ledPhysics.targetRotate = tiltY * -0.6;
+    }
   }
 
   profileBlock.addEventListener('mousemove', (e) => handleTilt(e, profileBlock));
@@ -919,6 +980,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       duration: 0.5,
       ease: 'power2.out'
     });
+    ledPhysics.targetX = 0;
+    ledPhysics.targetY = 0;
+    ledPhysics.targetRotate = 0;
   });
   profileBlock.addEventListener('touchend', () => {
     gsap.to(profileBlock, {
@@ -927,6 +991,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       duration: 0.5,
       ease: 'power2.out'
     });
+    ledPhysics.targetX = 0;
+    ledPhysics.targetY = 0;
+    ledPhysics.targetRotate = 0;
   });
 
   skillsBlock.addEventListener('mouseleave', () => {
