@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const profilePicture = document.querySelector('.profile-picture');
   const profileContainer = document.querySelector('.profile-container');
   const profileLedString = document.querySelector('.profile-led-string');
-  const profileLedBulbs = document.querySelectorAll('.profile-led-bulb');
+  const profileLedDrops = document.querySelectorAll('.profile-led-drop');
   const socialIcons = document.querySelectorAll('.social-link-btn');
   const badges = document.querySelectorAll('.badge');
   const interestTabs = document.querySelectorAll('.interest-tab');
@@ -386,11 +386,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     profileLedString.style.setProperty('--led-y', `${ledPhysics.y.toFixed(2)}px`);
     profileLedString.style.setProperty('--led-rotate', `${ledPhysics.rotate.toFixed(2)}deg`);
 
-    if (profileLedBulbs.length) {
-      const swayAmount = Math.max(-5, Math.min(5, ledPhysics.rotate * -0.45 + ledPhysics.vy * 1.8));
-      profileLedBulbs.forEach((bulb, index) => {
-        const wobble = Math.sin((performance.now() / 220) + index * 0.65) * 0.8;
-        bulb.style.setProperty('--string-sway', `${(swayAmount + wobble).toFixed(2)}px`);
+    if (profileLedDrops.length) {
+      const currentTime = performance.now();
+      const swingBase = Math.max(-12, Math.min(12, ledPhysics.rotate * -0.95 + ledPhysics.vy * 2.7));
+      const liftBase = Math.max(-5, Math.min(5, ledPhysics.y * -0.4 + ledPhysics.vr * 3.1));
+
+      profileLedDrops.forEach((drop, index) => {
+        const frequency = 0.00155 + (index % 5) * 0.00014;
+        const phase = index * 0.93;
+        const harmonic = Math.sin(currentTime * frequency + phase) * (1.9 - (index % 4) * 0.22);
+        const secondary = Math.sin(currentTime * (frequency * 0.65) + phase * 1.6) * 0.85;
+        const depth = 0.84 + (index % 6) * 0.065;
+        const individualizedSway = (swingBase * depth) + harmonic + secondary;
+        const individualizedLift = (liftBase * (0.74 + (index % 5) * 0.08)) + (Math.cos(currentTime * (frequency * 1.35) + phase) * 0.75);
+
+        drop.style.setProperty('--physics-sway', `${individualizedSway.toFixed(2)}deg`);
+        drop.style.setProperty('--physics-lift', `${individualizedLift.toFixed(2)}px`);
       });
     }
 
