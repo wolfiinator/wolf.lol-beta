@@ -217,123 +217,6 @@
             z-index: 2;
         }
 
-        .profile-led-string {
-            position: absolute;
-            left: -18px;
-            top: -46px;
-            width: calc(100% + 36px);
-            height: 126px;
-            pointer-events: none;
-            z-index: 1;
-            transform-origin: 50% 0;
-        }
-
-        .profile-led-wire {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            opacity: 0.88;
-            background:
-                radial-gradient(100% 75% at 12% 4px, transparent 58%, rgba(146, 157, 183, 0.96) 59%, rgba(104, 114, 139, 0.95) 63%, transparent 65%) 0 0 / 34% 100% repeat-x;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
-        }
-
-        .profile-led-wire::before,
-        .profile-led-wire::after {
-            content: '';
-            position: absolute;
-            top: 30px;
-            width: 28px;
-            height: 78px;
-            border: 2px solid rgba(142, 153, 179, 0.94);
-            border-top: none;
-            border-radius: 0 0 20px 20px;
-            opacity: 0.92;
-        }
-
-        .profile-led-wire::before {
-            left: 3px;
-            transform: rotate(8deg);
-        }
-
-        .profile-led-wire::after {
-            right: 3px;
-            transform: rotate(-8deg);
-        }
-
-        .profile-led-bulbs {
-            position: absolute;
-            inset: 0;
-            perspective: 540px;
-        }
-
-        .profile-led-drop {
-            --drop-length: 64px;
-            --drop-thickness: 2px;
-            --swing-duration: 5.4s;
-            --swing-angle: 8deg;
-            --swing-delay: 0s;
-            --phase: 0deg;
-            --bulb-size: 10px;
-            --glow-color: #f4b94f;
-            --strand-color: rgba(168, 178, 208, 0.95);
-            --strand-shadow: rgba(102, 113, 142, 0.5);
-            position: absolute;
-            top: 9px;
-            left: var(--x, 50%);
-            width: 16px;
-            height: calc(var(--drop-length) + 24px);
-            transform-origin: 50% 0;
-            will-change: transform;
-            animation: ledDropSway var(--swing-duration) cubic-bezier(0.45, 0.02, 0.55, 0.98) infinite;
-            animation-delay: var(--swing-delay);
-        }
-
-        .profile-led-drop::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            width: var(--drop-thickness);
-            height: var(--drop-length);
-            transform: translateX(-50%);
-            border-radius: 99px;
-            background:
-                linear-gradient(180deg, rgba(240, 246, 255, 0.98), var(--strand-color) 42%, color-mix(in srgb, var(--strand-color) 65%, transparent 35%) 100%);
-            box-shadow:
-                0 0 2px rgba(231, 237, 249, 0.9),
-                0 0 8px var(--strand-shadow);
-            opacity: 0.92;
-        }
-
-        .profile-led-drop::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: calc(var(--drop-length) - 1px);
-            width: var(--bulb-size);
-            height: calc(var(--bulb-size) * 1.38);
-            transform: translateX(-50%);
-            border-radius: 45% 45% 52% 52%;
-            background:
-                radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.98) 0 18%, rgba(255, 255, 255, 0.42) 22%, transparent 34%),
-                radial-gradient(circle at 58% 38%, color-mix(in srgb, var(--glow-color) 72%, #fff 28%) 0 34%, var(--glow-color) 64%, color-mix(in srgb, var(--glow-color) 62%, #0c1735 38%) 100%);
-            box-shadow:
-                0 0 10px color-mix(in srgb, var(--glow-color) 72%, #fff 28%),
-                0 0 22px color-mix(in srgb, var(--glow-color) 78%, transparent 22%),
-                0 0 44px color-mix(in srgb, var(--glow-color) 70%, transparent 30%),
-                0 0 72px color-mix(in srgb, var(--glow-color) 48%, transparent 52%);
-            filter: saturate(1.16) brightness(1.08);
-            animation: ledBulbFlicker var(--flicker-duration, 2.8s) steps(30, end) infinite;
-            animation-delay: var(--flicker-delay, 0s);
-        }
-
-        .profile-led-drop:nth-child(even) {
-            --glow-color: #4f95ff;
-        }
-
         .profile-container,
         .profile-info {
             position: relative;
@@ -476,51 +359,6 @@
             }
             50% {
                 box-shadow: 0 10px 34px rgba(0, 0, 0, 0.36), 0 0 20px rgba(59, 130, 246, 0.35);
-            }
-        }
-
-        @keyframes ledDropSway {
-            0% {
-                transform: rotate(calc((var(--swing-angle) * -1) + var(--phase)));
-            }
-            25% {
-                transform: rotate(calc(var(--swing-angle) * -0.35 + var(--phase)));
-            }
-            50% {
-                transform: rotate(calc(var(--swing-angle) + var(--phase)));
-            }
-            75% {
-                transform: rotate(calc(var(--swing-angle) * 0.35 + var(--phase)));
-            }
-            100% {
-                transform: rotate(calc((var(--swing-angle) * -1) + var(--phase)));
-            }
-        }
-
-        @keyframes ledBulbFlicker {
-            0%, 100% {
-                opacity: 0.88;
-                filter: brightness(0.96) saturate(1.12);
-            }
-            10% {
-                opacity: 0.93;
-                filter: brightness(1.08) saturate(1.18);
-            }
-            21% {
-                opacity: 0.84;
-                filter: brightness(0.86) saturate(1.04);
-            }
-            43% {
-                opacity: 0.98;
-                filter: brightness(1.2) saturate(1.24);
-            }
-            69% {
-                opacity: 0.87;
-                filter: brightness(0.9) saturate(1.1);
-            }
-            82% {
-                opacity: 1;
-                filter: brightness(1.26) saturate(1.25);
             }
         }
 
@@ -1554,20 +1392,6 @@
             </div>
             <div class="profile-header">
                 <div class="profile-container">
-                    <div class="profile-led-string" aria-hidden="true">
-                        <div class="profile-led-wire"></div>
-                        <div class="profile-led-bulbs">
-                            <span class="profile-led-drop" style="--x: 6%; --drop-length: 46px; --drop-thickness: 1.9px; --swing-duration: 4.8s; --swing-angle: 8deg; --swing-delay: -1.1s; --phase: -6deg; --flicker-duration: 2.4s; --flicker-delay: -0.7s; --bulb-size: 8px;"></span>
-                            <span class="profile-led-drop" style="--x: 17%; --drop-length: 58px; --drop-thickness: 2px; --swing-duration: 5.5s; --swing-angle: 7deg; --swing-delay: -2s; --phase: 5deg; --flicker-duration: 3s; --flicker-delay: -1.9s; --bulb-size: 9px;"></span>
-                            <span class="profile-led-drop" style="--x: 28%; --drop-length: 50px; --drop-thickness: 1.8px; --swing-duration: 4.9s; --swing-angle: 9deg; --swing-delay: -0.5s; --phase: -3deg; --flicker-duration: 2.1s; --flicker-delay: -0.2s; --bulb-size: 8px;"></span>
-                            <span class="profile-led-drop" style="--x: 39%; --drop-length: 62px; --drop-thickness: 2.1px; --swing-duration: 6.1s; --swing-angle: 6deg; --swing-delay: -1.7s; --phase: 7deg; --flicker-duration: 3.4s; --flicker-delay: -2.3s; --bulb-size: 9px;"></span>
-                            <span class="profile-led-drop" style="--x: 50%; --drop-length: 48px; --drop-thickness: 1.9px; --swing-duration: 5s; --swing-angle: 10deg; --swing-delay: -0.8s; --phase: 0deg; --flicker-duration: 2.2s; --flicker-delay: -1.5s; --bulb-size: 8px;"></span>
-                            <span class="profile-led-drop" style="--x: 61%; --drop-length: 60px; --drop-thickness: 2px; --swing-duration: 6.4s; --swing-angle: 6deg; --swing-delay: -2.4s; --phase: -7deg; --flicker-duration: 3.6s; --flicker-delay: -0.6s; --bulb-size: 9px;"></span>
-                            <span class="profile-led-drop" style="--x: 72%; --drop-length: 52px; --drop-thickness: 1.8px; --swing-duration: 5.3s; --swing-angle: 8deg; --swing-delay: -1.2s; --phase: 4deg; --flicker-duration: 2.6s; --flicker-delay: -2s; --bulb-size: 8px;"></span>
-                            <span class="profile-led-drop" style="--x: 83%; --drop-length: 64px; --drop-thickness: 2.2px; --swing-duration: 6.8s; --swing-angle: 5deg; --swing-delay: -0.2s; --phase: -5deg; --flicker-duration: 3.9s; --flicker-delay: -1s; --bulb-size: 9px;"></span>
-                            <span class="profile-led-drop" style="--x: 94%; --drop-length: 47px; --drop-thickness: 1.9px; --swing-duration: 4.7s; --swing-angle: 9deg; --swing-delay: -1.8s; --phase: 6deg; --flicker-duration: 2.3s; --flicker-delay: -0.3s; --bulb-size: 8px;"></span>
-                        </div>
-                    </div>
                     <img src="assets/profile.gif" alt="Profile" class="profile-picture">
                 </div>
                 <div class="profile-info">
