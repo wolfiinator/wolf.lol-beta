@@ -76,8 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const skillsBlock = document.getElementById('skills-block');
   const profilePicture = document.querySelector('.profile-picture');
   const profileContainer = document.querySelector('.profile-container');
-  const profileLedString = document.querySelector('.profile-led-string');
-  const profileLedDrops = document.querySelectorAll('.profile-led-drop');
   const socialIcons = document.querySelectorAll('.social-link-btn');
   const badges = document.querySelectorAll('.badge');
   const interestTabs = document.querySelectorAll('.interest-tab');
@@ -348,69 +346,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initializeVisitorCounter();
 
-  const ledPhysics = {
-    targetX: 0,
-    targetY: 0,
-    targetRotate: 0,
-    x: 0,
-    y: 0,
-    rotate: 0,
-    vx: 0,
-    vy: 0,
-    vr: 0
-  };
-
-  let ledPhysicsAnimationId = null;
-
-  function updateLedPhysics() {
-    if (!profileLedString) {
-      return;
-    }
-
-    const spring = 0.14;
-    const damping = 0.8;
-
-    ledPhysics.vx += (ledPhysics.targetX - ledPhysics.x) * spring;
-    ledPhysics.vy += (ledPhysics.targetY - ledPhysics.y) * spring;
-    ledPhysics.vr += (ledPhysics.targetRotate - ledPhysics.rotate) * spring;
-
-    ledPhysics.vx *= damping;
-    ledPhysics.vy *= damping;
-    ledPhysics.vr *= damping;
-
-    ledPhysics.x += ledPhysics.vx;
-    ledPhysics.y += ledPhysics.vy;
-    ledPhysics.rotate += ledPhysics.vr;
-
-    profileLedString.style.setProperty('--led-x', `${ledPhysics.x.toFixed(2)}px`);
-    profileLedString.style.setProperty('--led-y', `${ledPhysics.y.toFixed(2)}px`);
-    profileLedString.style.setProperty('--led-rotate', `${ledPhysics.rotate.toFixed(2)}deg`);
-
-    if (profileLedDrops.length) {
-      const currentTime = performance.now();
-      const swingBase = Math.max(-12, Math.min(12, ledPhysics.rotate * -0.95 + ledPhysics.vy * 2.7));
-      const liftBase = Math.max(-5, Math.min(5, ledPhysics.y * -0.4 + ledPhysics.vr * 3.1));
-
-      profileLedDrops.forEach((drop, index) => {
-        const frequency = 0.00155 + (index % 5) * 0.00014;
-        const phase = index * 0.93;
-        const harmonic = Math.sin(currentTime * frequency + phase) * (1.9 - (index % 4) * 0.22);
-        const secondary = Math.sin(currentTime * (frequency * 0.65) + phase * 1.6) * 0.85;
-        const depth = 0.84 + (index % 6) * 0.065;
-        const individualizedSway = (swingBase * depth) + harmonic + secondary;
-        const individualizedLift = (liftBase * (0.74 + (index % 5) * 0.08)) + (Math.cos(currentTime * (frequency * 1.35) + phase) * 0.75);
-
-        drop.style.setProperty('--physics-sway', `${individualizedSway.toFixed(2)}deg`);
-        drop.style.setProperty('--physics-lift', `${individualizedLift.toFixed(2)}px`);
-      });
-    }
-
-    ledPhysicsAnimationId = requestAnimationFrame(updateLedPhysics);
-  }
-
-  if (profileLedString) {
-    ledPhysicsAnimationId = requestAnimationFrame(updateLedPhysics);
-  }
 
   function updateProfileClock() {
     const time = new Date().toLocaleTimeString('en-US', {
@@ -965,11 +900,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       transformPerspective: 1000
     });
 
-    if (element === profileBlock && profileLedString) {
-      ledPhysics.targetX = tiltY * 0.45;
-      ledPhysics.targetY = tiltX * 0.35;
-      ledPhysics.targetRotate = tiltY * -0.6;
-    }
   }
 
   profileBlock.addEventListener('mousemove', (e) => handleTilt(e, profileBlock));
@@ -991,9 +921,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       duration: 0.5,
       ease: 'power2.out'
     });
-    ledPhysics.targetX = 0;
-    ledPhysics.targetY = 0;
-    ledPhysics.targetRotate = 0;
   });
   profileBlock.addEventListener('touchend', () => {
     gsap.to(profileBlock, {
@@ -1002,9 +929,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       duration: 0.5,
       ease: 'power2.out'
     });
-    ledPhysics.targetX = 0;
-    ledPhysics.targetY = 0;
-    ledPhysics.targetRotate = 0;
   });
 
   skillsBlock.addEventListener('mouseleave', () => {
