@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const miniPlayPauseButton = document.getElementById('mini-play-pause');
   const miniPrevButton = document.getElementById('mini-prev');
   const miniNextButton = document.getElementById('mini-next');
+  const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
 
   const interestsContent = {
     beastars: {
@@ -384,6 +385,81 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (musicEqualizer) {
       musicEqualizer.classList.toggle('playing', isPlaying);
+    }
+  }
+
+  let audioContext = null;
+  let analyserNode = null;
+  let sourceNode = null;
+  let equalizerFrame = null;
+
+  function resetEqualizerBars() {
+    equalizerBars.forEach((bar) => {
+      bar.style.height = '4px';
+      bar.style.opacity = '0.35';
+    });
+  }
+
+  function renderEqualizerFrame() {
+    if (!analyserNode || !equalizerBars.length) {
+      equalizerFrame = null;
+      return;
+    }
+
+    const frequencyData = new Uint8Array(analyserNode.frequencyBinCount);
+    analyserNode.getByteFrequencyData(frequencyData);
+    const bucketSize = Math.floor(frequencyData.length / equalizerBars.length) || 1;
+
+    equalizerBars.forEach((bar, index) => {
+      const start = index * bucketSize;
+      const end = Math.min(start + bucketSize, frequencyData.length);
+      let sum = 0;
+      for (let i = start; i < end; i++) {
+        sum += frequencyData[i];
+      }
+      const average = sum / Math.max(end - start, 1);
+      const normalized = average / 255;
+      const barHeight = 4 + normalized * 14;
+      bar.style.height = `${barHeight.toFixed(1)}px`;
+      bar.style.opacity = `${Math.min(1, 0.45 + normalized * 0.55)}`;
+    });
+
+    equalizerFrame = requestAnimationFrame(renderEqualizerFrame);
+  }
+
+  function stopEqualizerLoop() {
+    if (equalizerFrame) {
+      cancelAnimationFrame(equalizerFrame);
+      equalizerFrame = null;
+    }
+    resetEqualizerBars();
+  }
+
+  async function initializeEqualizer() {
+    if (!albumPlayer || !equalizerBars.length) return;
+    if (audioContext && analyserNode) return;
+
+    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextCtor) return;
+
+    audioContext = new AudioContextCtor();
+    sourceNode = audioContext.createMediaElementSource(albumPlayer);
+    analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 128;
+    analyserNode.smoothingTimeConstant = 0.82;
+
+    sourceNode.connect(analyserNode);
+    analyserNode.connect(audioContext.destination);
+    resetEqualizerBars();
+  }
+
+  async function startEqualizerLoop() {
+    await initializeEqualizer();
+    if (audioContext?.state === 'suspended') {
+      await audioContext.resume();
+    }
+    if (!equalizerFrame) {
+      renderEqualizerFrame();
     }
   }
 
@@ -1254,12 +1330,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (albumPlayer) {
-    albumPlayer.addEventListener('play', () => { refreshPlayPauseButton(); updateMusicAnimations(); refreshMinimizedTrack(); });
-    albumPlayer.addEventListener('pause', () => { refreshPlayPauseButton(); updateMusicAnimations(); refreshMinimizedTrack(); });
+    albumPlayer.addEventListener('play', () => {
+      refreshPlayPauseButton();
+      updateMusicAnimations();
+      refreshMinimizedTrack();
+      startEqualizerLoop().catch((err) => console.warn('Equalizer unavailable:', err));
+    });
+    albumPlayer.addEventListener('pause', () => {
+      refreshPlayPauseButton();
+      updateMusicAnimations();
+      refreshMinimizedTrack();
+      stopEqualizerLoop();
+    });
     albumPlayer.addEventListener('timeupdate', refreshMinimizedTrack);
     albumPlayer.addEventListener('loadedmetadata', refreshMinimizedTrack);
     albumPlayer.addEventListener('durationchange', refreshMinimizedTrack);
     albumPlayer.addEventListener('ended', () => {
+      stopEqualizerLoop();
       if (customTracks.length === 0) return;
       const nextIndex = (activeCustomTrackIndex + 1) % customTracks.length;
       playCustomTrack(nextIndex);
