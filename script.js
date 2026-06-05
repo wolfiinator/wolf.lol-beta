@@ -1237,7 +1237,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     if (interestsNextPageButton) {
-      interestsNextPageButton.classList.toggle('is-visible', interestKey === 'the-bad-guys-2');
+      const canAdvance = interestKey === 'the-bad-guys-2';
+      interestsNextPageButton.hidden = !canAdvance;
+      interestsNextPageButton.classList.toggle('is-visible', canAdvance);
     }
   }
 
@@ -1275,7 +1277,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     if (characterInterestsNextPageButton) {
-      characterInterestsNextPageButton.classList.toggle('is-visible', interestKey === 'jack');
+      const canAdvance = interestKey === 'jack';
+      characterInterestsNextPageButton.hidden = !canAdvance;
+      characterInterestsNextPageButton.classList.toggle('is-visible', canAdvance);
     }
   }
 
