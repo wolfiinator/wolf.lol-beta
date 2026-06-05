@@ -638,6 +638,68 @@
             opacity: 1;
         }
 
+        .lastfm-presence {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 58px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            align-self: flex-end;
+            width: min(310px, 100%);
+            margin-top: -6px;
+            margin-bottom: 4px;
+            padding: 8px 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.28));
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.22), 0 0 16px color-mix(in srgb, var(--primary-color, #00CED1) 28%, transparent);
+            overflow: hidden;
+        }
+
+        .lastfm-cover {
+            width: 58px;
+            height: 58px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .lastfm-copy {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .lastfm-label {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 9px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lastfm-song,
+        .lastfm-artist {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .lastfm-song {
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .lastfm-artist {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 11px;
+        }
+
         .social-links {
             display: flex;
             justify-content: center;
@@ -885,6 +947,25 @@
             line-height: 1.45;
             overflow-wrap: anywhere;
             white-space: pre-wrap;
+        }
+
+        .more-messages-view {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .more-messages-view .guestbook-panel {
+            position: static;
+            width: 100%;
+            height: min(430px, 58vh);
+            max-height: none;
+            opacity: 1;
+            transform: none;
+            border-radius: 15px;
+            border-left-color: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 35%, transparent);
         }
 
         #skills-block {
@@ -1404,6 +1485,24 @@
                 height: 34px;
             }
 
+            .lastfm-presence {
+                position: static;
+                grid-template-columns: 48px minmax(0, 1fr);
+                align-self: stretch;
+                width: 100%;
+                margin: 0 0 8px;
+            }
+
+            .lastfm-cover {
+                width: 48px;
+                height: 48px;
+            }
+
+            .more-messages-view .guestbook-panel {
+                height: min(420px, 62vh);
+                padding: 12px;
+            }
+
             .visitor-counter {
                 font-size: 12px;
                 padding: 6px 12px;
@@ -1515,6 +1614,19 @@
                 padding: 0 20px;
             }
         }
+
+        .more-messages-view .guestbook-panel {
+            position: static;
+            top: auto;
+            left: auto;
+            right: auto;
+            width: 100%;
+            height: min(430px, 58vh);
+            max-height: none;
+            opacity: 1;
+            transform: none;
+        }
+
     </style>
     <link href="https://fonts.cdnfonts.com/css/minecraftia" rel="stylesheet">
 </head>
@@ -1585,6 +1697,14 @@
             <div class="bio-separator"></div>
 
             <div class="profile-footer">
+                <section id="lastfm-presence" class="lastfm-presence" aria-label="Last.fm now playing">
+                    <img id="lastfm-cover" class="lastfm-cover" src="assets/profile.gif" alt="Last.fm album cover">
+                    <div class="lastfm-copy">
+                        <span id="lastfm-label" class="lastfm-label">last.fm</span>
+                        <strong id="lastfm-song" class="lastfm-song">loading track...</strong>
+                        <span id="lastfm-artist" class="lastfm-artist">wendall.gt</span>
+                    </div>
+                </section>
 
                 <div class="social-links">
                     <a href="https://www.roblox.com/users/1431265/profile" target="_blank" class="social-link-btn" aria-label="Roblox profile">
@@ -1609,22 +1729,6 @@
                 </div>
             </div>
 
-            <aside id="guestbook-panel" class="guestbook-panel" aria-labelledby="guestbook-title">
-                <div class="guestbook-head">
-                    <h2 id="guestbook-title" class="guestbook-title">messages.</h2>
-                    <p class="guestbook-subtitle">leave a profile comment. no account needed.</p>
-                </div>
-                <form id="guestbook-form" class="guestbook-form">
-                    <input id="guestbook-username" type="text" name="username" placeholder="username" maxlength="24" autocomplete="nickname" required>
-                    <input id="guestbook-avatar-url" type="url" name="avatar" placeholder="pfp image url (optional)" autocomplete="url">
-                    <textarea id="guestbook-message" name="message" placeholder="type your message..." maxlength="280" required></textarea>
-                    <button id="guestbook-submit" class="guestbook-submit" type="submit">Send</button>
-                    <div id="guestbook-status" class="guestbook-status" role="status" aria-live="polite"></div>
-                </form>
-                <div id="guestbook-messages" class="guestbook-messages" aria-live="polite">
-                    <div class="guestbook-empty">loading messages...</div>
-                </div>
-            </aside>
         </div>
 
 
@@ -1638,8 +1742,29 @@
                     <button id="open-more-music" class="more-option" type="button">Music Player</button>
                     <button id="open-more-interests" class="more-option" type="button">Interests</button>
                     <button id="open-more-presets" class="more-option" type="button">Presets</button>
+                    <button id="open-more-messages" class="more-option" type="button">Messages</button>
                 </div>
             </div>
+            <div id="more-messages-view" class="more-view more-messages-view hidden">
+                <button id="more-messages-back" class="subview-back" type="button">Back</button>
+                <aside id="guestbook-panel" class="guestbook-panel" aria-labelledby="guestbook-title">
+                    <div class="guestbook-head">
+                        <h2 id="guestbook-title" class="guestbook-title">messages.</h2>
+                        <p class="guestbook-subtitle">leave a profile comment. no account needed.</p>
+                    </div>
+                    <form id="guestbook-form" class="guestbook-form">
+                        <input id="guestbook-username" type="text" name="username" placeholder="username" maxlength="24" autocomplete="nickname" required>
+                        <input id="guestbook-avatar-url" type="url" name="avatar" placeholder="pfp image url (optional)" autocomplete="url">
+                        <textarea id="guestbook-message" name="message" placeholder="type your message..." maxlength="280" required></textarea>
+                        <button id="guestbook-submit" class="guestbook-submit" type="submit">Send</button>
+                        <div id="guestbook-status" class="guestbook-status" role="status" aria-live="polite"></div>
+                    </form>
+                    <div id="guestbook-messages" class="guestbook-messages" aria-live="polite">
+                        <div class="guestbook-empty">loading messages...</div>
+                    </div>
+                </aside>
+            </div>
+
             <div id="more-presets-view" class="more-view hidden">
                 <button id="more-presets-back" class="subview-back" type="button">Back</button>
                 <h2 class="skills-title">Presets</h2>

@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
   const moreInterestsGamesView = document.getElementById('more-interests-games-view');
+  const moreMessagesView = document.getElementById('more-messages-view');
   const musicArtistSelectView = document.getElementById('music-artist-select-view');
   const musicArtistPlayerView = document.getElementById('music-artist-player-view');
   const musicArtistListNode = document.getElementById('music-artist-list');
@@ -54,11 +55,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openMoreMusicButton = document.getElementById('open-more-music');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const openMorePresetsButton = document.getElementById('open-more-presets');
+  const openMoreMessagesButton = document.getElementById('open-more-messages');
   const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
   const moreInterestsGamesBackButton = document.getElementById('more-interests-games-back');
+  const moreMessagesBackButton = document.getElementById('more-messages-back');
   const musicListNode = document.getElementById('music-list');
   const musicNowPlayingNode = document.getElementById('music-now-playing');
   const musicCoverNode = document.getElementById('music-cover');
@@ -97,6 +100,69 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestGameName = document.getElementById('interest-game-name');
   const interestGameDescription = document.getElementById('interest-game-description');
   const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
+  const lastFmCover = document.getElementById('lastfm-cover');
+  const lastFmLabel = document.getElementById('lastfm-label');
+  const lastFmSong = document.getElementById('lastfm-song');
+  const lastFmArtist = document.getElementById('lastfm-artist');
+  const lastFmUsername = 'wendall.gt';
+  const lastFmApiKey = 'b25b959554ed76058ac220b7b2e0a026';
+
+
+  async function getLastFmNowPlaying() {
+    const params = new URLSearchParams({
+      method: 'user.getrecenttracks',
+      user: lastFmUsername,
+      api_key: lastFmApiKey,
+      format: 'json',
+      limit: '1'
+    });
+
+    try {
+      const response = await fetch(`https://ws.audioscrobbler.com/2.0/?${params.toString()}`, { cache: 'no-store' });
+      if (!response.ok) return null;
+      const data = await response.json();
+      const tracks = data?.recenttracks?.track;
+      if (data?.error || !Array.isArray(tracks) || tracks.length === 0) return null;
+
+      const track = tracks[0];
+      const images = Array.isArray(track.image) ? track.image : [];
+      const coverImage = [...images].reverse().find((image) => image?.['#text']);
+      const cover = coverImage?.['#text'] || 'assets/profile.gif';
+
+      return {
+        title: track.name || 'Unknown song',
+        artist: track.artist?.['#text'] || 'Unknown artist',
+        cover,
+        nowPlaying: track['@attr']?.nowplaying === 'true'
+      };
+    } catch (error) {
+      console.error('Last.fm presence failed:', error);
+      return null;
+    }
+  }
+
+  function renderLastFmPresence(track) {
+    if (!lastFmCover || !lastFmLabel || !lastFmSong || !lastFmArtist) return;
+
+    if (!track) {
+      lastFmCover.src = 'assets/profile.gif';
+      lastFmCover.alt = 'Last.fm unavailable';
+      lastFmLabel.textContent = 'last.fm';
+      lastFmSong.textContent = 'track unavailable';
+      lastFmArtist.textContent = lastFmUsername;
+      return;
+    }
+
+    lastFmCover.src = track.cover || 'assets/profile.gif';
+    lastFmCover.alt = `${track.title} album cover`;
+    lastFmLabel.textContent = track.nowPlaying ? 'listening now' : 'last played';
+    lastFmSong.textContent = track.title;
+    lastFmArtist.textContent = track.artist;
+  }
+
+  async function updateLastFmPresence() {
+    renderLastFmPresence(await getLastFmNowPlaying());
+  }
 
   const interestsContent = {
     beastars: {
@@ -1111,6 +1177,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     boostOrbit();
   });
 
+  updateLastFmPresence();
+  setInterval(updateLastFmPresence, 30000);
+
  
   let activeMoreSubview = moreHomeView;
 
@@ -1152,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, morePresetsView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, morePresetsView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
@@ -1221,6 +1290,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (openMoreMessagesButton) {
+    openMoreMessagesButton.addEventListener('click', () => showMoreSubview(moreMessagesView));
+  }
+
   if (morePresetsBackButton) {
     morePresetsBackButton.addEventListener('click', () => {
       localStorage.setItem(presetStorageKey, activePresetKey);
@@ -1237,6 +1310,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (moreInterestsBackButton) {
     moreInterestsBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
+  }
+
+  if (moreMessagesBackButton) {
+    moreMessagesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
   }
 
   if (moreInterestsCharactersBackButton) {
