@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const minimizeProfileButton = document.getElementById('minimize-profile');
   const maximizeProfileButton = document.getElementById('maximize-profile');
   const moreHomeView = document.getElementById('more-home-view');
+  const morePresetsView = document.getElementById('more-presets-view');
   const moreMusicView = document.getElementById('more-music-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
@@ -54,6 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const musicArtistBackButton = document.getElementById('music-artist-back');
   const openMoreMusicButton = document.getElementById('open-more-music');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
+  const openMorePresetsButton = document.getElementById('open-more-presets');
+  const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
@@ -83,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestTabs = document.querySelectorAll('.interest-tab');
   const interestCharacterTabs = document.querySelectorAll('.interest-character-tab');
   const interestGameTabs = document.querySelectorAll('.interest-game-tab');
+  const presetButtons = document.querySelectorAll('.preset-card');
   const interestsNextPageButton = document.getElementById('interests-next-page');
   const characterInterestsNextPageButton = document.getElementById('character-interests-next-page');
   const interestImage = document.getElementById('interest-image');
@@ -138,6 +142,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       image: 'assets/vrchat.jpg',
       alt: 'VRChat artwork',
       description: 'VRChat is a social virtual reality platform where users interact through custom 3D avatars in user-created worlds, offering limitless creative and social experiences.'
+    },
+    chilloutvr: {
+      name: 'ChilloutVR',
+      image: 'assets/chilloutvr.svg',
+      alt: 'ChilloutVR artwork',
+      description: 'ChilloutVR is a social sandbox game enabling players and content creators to create, share and explore content in a massive multiplayer metaverse alone, with friends or anyone around the world. Meet new people and explore virtual worlds together.'
     }
   };
 
@@ -773,6 +783,88 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 500);
 
 
+  const profilePresets = {
+    blue: {
+      name: 'Blue',
+      background: 'assets/background.mp4',
+      profile: 'assets/profile.gif',
+      primaryColor: '#00CED1',
+      secondaryColor: '#FF6B9E'
+    },
+    orange: {
+      name: 'Orange',
+      background: 'assets/background2.mp4',
+      profile: 'assets/pfp2.jpg',
+      primaryColor: '#FF8A1D',
+      secondaryColor: '#FF4D00'
+    },
+    black: {
+      name: 'Black',
+      background: 'assets/background3.mp4',
+      profile: 'assets/pfp3.jpg',
+      primaryColor: '#E5E7EB',
+      secondaryColor: '#6B7280'
+    }
+  };
+  const presetStorageKey = 'wolf-profile-preset';
+  let activePresetKey = localStorage.getItem(presetStorageKey);
+  if (!profilePresets[activePresetKey]) {
+    activePresetKey = 'blue';
+  }
+
+  function refreshPresetButtons() {
+    presetButtons.forEach((button) => {
+      const isActive = button.dataset.preset === activePresetKey;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function setBackgroundSource(src) {
+    if (!backgroundVideo || !src) {
+      return;
+    }
+
+    const currentSrc = backgroundVideo.currentSrc || backgroundVideo.src || '';
+    if (!currentSrc.endsWith(src)) {
+      backgroundVideo.src = src;
+      backgroundVideo.load();
+    }
+    backgroundVideo.play().catch((err) => console.error('Failed to play preset background:', err));
+  }
+
+  function applyProfilePreset(presetKey, shouldSave = true) {
+    const preset = profilePresets[presetKey] || profilePresets.blue;
+    activePresetKey = profilePresets[presetKey] ? presetKey : 'blue';
+
+    if (shouldSave) {
+      localStorage.setItem(presetStorageKey, activePresetKey);
+    }
+
+    if (profilePicture) {
+      profilePicture.src = preset.profile;
+      profilePicture.alt = `${preset.name} profile`;
+    }
+    if (backgroundVideo) {
+      backgroundVideo.poster = preset.profile;
+      setBackgroundSource(preset.background);
+    }
+    document.documentElement.style.setProperty('--primary-color', preset.primaryColor);
+    document.documentElement.style.setProperty('--secondary-color', preset.secondaryColor);
+    refreshPresetButtons();
+  }
+
+  applyProfilePreset(activePresetKey, false);
+
+  presetButtons.forEach((button) => {
+    const selectPreset = () => applyProfilePreset(button.dataset.preset);
+    button.addEventListener('click', selectPreset);
+    button.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      selectPreset();
+    });
+  });
+
   let currentAudio = musicPlayer;
 
   function playTrackForTheme(themeClass) {
@@ -904,14 +996,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       default:
         primaryColor = '#00CED1';
     }
-    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    const activePreset = profilePresets[activePresetKey];
+    document.documentElement.style.setProperty('--primary-color', activePreset?.primaryColor || primaryColor);
+    if (activePreset?.secondaryColor) {
+      document.documentElement.style.setProperty('--secondary-color', activePreset.secondaryColor);
+    }
 
     gsap.to(backgroundVideo, {
       opacity: 0,
       duration: 0.5,
       ease: 'power2.in',
       onComplete: () => {
-        backgroundVideo.src = videoSrc;
+        setBackgroundSource(profilePresets[activePresetKey]?.background || videoSrc);
 
         if (currentAudio) {
           currentAudio.pause();
@@ -1108,6 +1204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function openMoreView() {
+    localStorage.setItem(presetStorageKey, activePresetKey);
     gsap.to(profileBlock, {
       x: -100,
       opacity: 0,
@@ -1116,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, morePresetsView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
@@ -1181,6 +1278,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     openMoreInterestsButton.addEventListener('click', () => {
       showMoreSubview(moreInterestsView);
       updateInterestTab('beastars');
+    });
+  }
+
+  if (openMorePresetsButton) {
+    openMorePresetsButton.addEventListener('click', () => {
+      localStorage.setItem(presetStorageKey, activePresetKey);
+      refreshPresetButtons();
+      showMoreSubview(morePresetsView);
+    });
+  }
+
+  if (morePresetsBackButton) {
+    morePresetsBackButton.addEventListener('click', () => {
+      localStorage.setItem(presetStorageKey, activePresetKey);
+      showMoreSubview(moreHomeView);
     });
   }
 
