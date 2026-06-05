@@ -688,13 +688,187 @@
             width: 34px;
             height: 10px;
             border-radius: 999px;
-            background: linear-gradient(90deg, var(--primary-color, #00CED1), var(--secondary-color, #FF6B9E));
+            background: linear-gradient(90deg, var(--primary-color, #00CED1), var(--secondary-color, #2563EB));
             box-shadow: 0 0 12px var(--primary-color, #00CED1);
             z-index: 20;
             animation: rain-loop 2.1s linear infinite;
         }
 
         
+
+
+        .guestbook-panel {
+            position: fixed;
+            top: 50%;
+            left: calc(50% + 440px);
+            transform: translateY(-50%);
+            width: min(330px, calc(50vw - 470px));
+            min-width: 280px;
+            max-height: min(620px, calc(100vh - 80px));
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 35%, transparent);
+            backdrop-filter: blur(10px);
+            z-index: 20;
+            pointer-events: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.5s ease-out, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .guestbook-panel.guestbook-ready {
+            opacity: 1;
+        }
+
+        .guestbook-title {
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-color, #00CED1);
+        }
+
+        .guestbook-subtitle {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .guestbook-form {
+            display: grid;
+            gap: 8px;
+        }
+
+        .guestbook-form input,
+        .guestbook-form textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            padding: 9px 10px;
+            font-family: 'Minecraftia', monospace;
+            font-size: 11px;
+            outline: none;
+        }
+
+        .guestbook-form textarea {
+            min-height: 82px;
+            resize: vertical;
+        }
+
+        .guestbook-form input:focus,
+        .guestbook-form textarea:focus {
+            border-color: var(--primary-color, #00CED1);
+            box-shadow: 0 0 12px color-mix(in srgb, var(--primary-color, #00CED1) 40%, transparent);
+        }
+
+        .guestbook-form input::placeholder,
+        .guestbook-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.48);
+        }
+
+        .guestbook-submit {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--primary-color, #00CED1), var(--secondary-color, #2563EB));
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Minecraftia', monospace;
+            font-size: 12px;
+            padding: 9px 14px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .guestbook-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 45%, transparent);
+        }
+
+        .guestbook-submit:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .guestbook-status {
+            min-height: 15px;
+            color: rgba(255, 255, 255, 0.74);
+            font-size: 10px;
+        }
+
+        .guestbook-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .guestbook-empty {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            line-height: 1.45;
+            padding: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+        }
+
+        .guestbook-message {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .guestbook-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary-color, #00CED1), var(--secondary-color, #2563EB));
+            border: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .guestbook-message-main {
+            min-width: 0;
+        }
+
+        .guestbook-message-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .guestbook-username {
+            color: #fff;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .guestbook-time {
+            color: rgba(255, 255, 255, 0.45);
+            flex: 0 0 auto;
+            font-size: 9px;
+        }
+
+        .guestbook-text {
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 11px;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
         #skills-block {
             position: fixed;
             top: 50%;
@@ -1063,6 +1237,20 @@
 
         
         @media (max-width: 430px) {
+
+            .guestbook-panel {
+                position: fixed;
+                top: auto;
+                bottom: 92px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90vw;
+                min-width: 0;
+                max-width: 350px;
+                max-height: 38vh;
+                padding: 12px;
+            }
+
             
             #profile-block, #skills-block {
                 width: 90vw;
@@ -1362,6 +1550,22 @@
         </div>
 
 
+        <aside id="guestbook-panel" class="guestbook-panel" aria-labelledby="guestbook-title">
+            <h2 id="guestbook-title" class="guestbook-title">messages.</h2>
+            <p class="guestbook-subtitle">leave a profile comment. no account needed.</p>
+            <form id="guestbook-form" class="guestbook-form">
+                <input id="guestbook-username" type="text" name="username" placeholder="username" maxlength="24" autocomplete="nickname" required>
+                <input id="guestbook-avatar-url" type="url" name="avatar" placeholder="pfp image url (optional)" autocomplete="url">
+                <textarea id="guestbook-message" name="message" placeholder="type your message..." maxlength="280" required></textarea>
+                <button id="guestbook-submit" class="guestbook-submit" type="submit">Send</button>
+                <div id="guestbook-status" class="guestbook-status" role="status" aria-live="polite"></div>
+            </form>
+            <div id="guestbook-messages" class="guestbook-messages" aria-live="polite">
+                <div class="guestbook-empty">loading messages...</div>
+            </div>
+        </aside>
+
+
         <div id="skills-block" class="hidden">
             <div class="card-actions">
                 <button id="close-more" class="results-toggle">Back to Profile</button>
@@ -1560,6 +1764,169 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getDatabase, limitToLast, onValue, orderByChild, push, query, ref, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDk97WO5EpDtGNXPrZSY4J_v7fKk2mvdV4",
+            authDomain: "wolf-lol-a2d9c.firebaseapp.com",
+            databaseURL: "https://wolf-lol-a2d9c-default-rtdb.firebaseio.com",
+            projectId: "wolf-lol-a2d9c",
+            storageBucket: "wolf-lol-a2d9c.firebasestorage.app",
+            messagingSenderId: "923235343474",
+            appId: "1:923235343474:web:12775d681bef8a1c0276eb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const messagesRef = ref(database, "profileMessages");
+
+        const panel = document.getElementById("guestbook-panel");
+        const form = document.getElementById("guestbook-form");
+        const usernameInput = document.getElementById("guestbook-username");
+        const avatarInput = document.getElementById("guestbook-avatar-url");
+        const messageInput = document.getElementById("guestbook-message");
+        const submitButton = document.getElementById("guestbook-submit");
+        const statusNode = document.getElementById("guestbook-status");
+        const messagesNode = document.getElementById("guestbook-messages");
+
+        const fallbackAvatar = "assets/profile.gif";
+        const dateFormatter = new Intl.DateTimeFormat(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+        });
+
+        function cleanText(value, maxLength) {
+            return value.replace(/\s+/g, " ").trim().slice(0, maxLength);
+        }
+
+        function isHttpImageUrl(value) {
+            if (!value) {
+                return true;
+            }
+
+            try {
+                const parsed = new URL(value);
+                return ["http:", "https:"].includes(parsed.protocol);
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function setStatus(message) {
+            statusNode.textContent = message;
+        }
+
+        function renderMessages(snapshot) {
+            const messages = [];
+            snapshot.forEach((childSnapshot) => {
+                messages.push({ id: childSnapshot.key, ...childSnapshot.val() });
+            });
+            messages.reverse();
+
+            messagesNode.replaceChildren();
+
+            if (!messages.length) {
+                const emptyNode = document.createElement("div");
+                emptyNode.className = "guestbook-empty";
+                emptyNode.textContent = "be the first to leave a message.";
+                messagesNode.append(emptyNode);
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            messages.forEach((message) => {
+                const article = document.createElement("article");
+                article.className = "guestbook-message";
+
+                const avatar = document.createElement("img");
+                avatar.className = "guestbook-avatar";
+                avatar.src = message.avatarUrl || fallbackAvatar;
+                avatar.alt = `${message.username || "guest"}'s pfp`;
+                avatar.loading = "lazy";
+                avatar.referrerPolicy = "no-referrer";
+                avatar.addEventListener("error", () => {
+                    avatar.src = fallbackAvatar;
+                }, { once: true });
+
+                const main = document.createElement("div");
+                main.className = "guestbook-message-main";
+
+                const head = document.createElement("div");
+                head.className = "guestbook-message-head";
+
+                const username = document.createElement("strong");
+                username.className = "guestbook-username";
+                username.textContent = message.username || "guest";
+
+                const time = document.createElement("time");
+                time.className = "guestbook-time";
+                if (typeof message.createdAt === "number") {
+                    time.dateTime = new Date(message.createdAt).toISOString();
+                    time.textContent = dateFormatter.format(message.createdAt);
+                } else {
+                    time.textContent = "just now";
+                }
+
+                const text = document.createElement("p");
+                text.className = "guestbook-text";
+                text.textContent = message.text || "";
+
+                head.append(username, time);
+                main.append(head, text);
+                article.append(avatar, main);
+                fragment.append(article);
+            });
+
+            messagesNode.append(fragment);
+        }
+
+        onValue(query(messagesRef, orderByChild("createdAt"), limitToLast(50)), renderMessages, (error) => {
+            messagesNode.innerHTML = '<div class="guestbook-empty">messages could not load right now.</div>';
+            setStatus(error.message);
+        });
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const username = cleanText(usernameInput.value, 24);
+            const avatarUrl = avatarInput.value.trim();
+            const text = cleanText(messageInput.value, 280);
+
+            if (!username || !text) {
+                setStatus("username and message are required.");
+                return;
+            }
+
+            if (!isHttpImageUrl(avatarUrl)) {
+                setStatus("pfp must be an http or https image url.");
+                return;
+            }
+
+            submitButton.disabled = true;
+            setStatus("sending...");
+            try {
+                await push(messagesRef, {
+                    username,
+                    avatarUrl,
+                    text,
+                    createdAt: serverTimestamp()
+                });
+                form.reset();
+                setStatus("sent forever.");
+            } catch (error) {
+                setStatus(error.message || "message could not send right now.");
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        panel.classList.add("guestbook-ready");
+    </script>
 
     <script src="script.js"></script>
 </body>
