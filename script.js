@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreMusicView = document.getElementById('more-music-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
+  const moreInterestsGamesView = document.getElementById('more-interests-games-view');
   const musicArtistSelectView = document.getElementById('music-artist-select-view');
   const musicArtistPlayerView = document.getElementById('music-artist-player-view');
   const musicArtistListNode = document.getElementById('music-artist-list');
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreMusicBackButton = document.getElementById('more-music-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
+  const moreInterestsGamesBackButton = document.getElementById('more-interests-games-back');
   const musicListNode = document.getElementById('music-list');
   const musicNowPlayingNode = document.getElementById('music-now-playing');
   const musicCoverNode = document.getElementById('music-cover');
@@ -80,13 +82,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const badges = document.querySelectorAll('.badge');
   const interestTabs = document.querySelectorAll('.interest-tab');
   const interestCharacterTabs = document.querySelectorAll('.interest-character-tab');
+  const interestGameTabs = document.querySelectorAll('.interest-game-tab');
   const interestsNextPageButton = document.getElementById('interests-next-page');
+  const characterInterestsNextPageButton = document.getElementById('character-interests-next-page');
   const interestImage = document.getElementById('interest-image');
   const interestName = document.getElementById('interest-name');
   const interestDescription = document.getElementById('interest-description');
   const interestCharacterImage = document.getElementById('interest-character-image');
   const interestCharacterName = document.getElementById('interest-character-name');
   const interestCharacterDescription = document.getElementById('interest-character-description');
+  const interestGameImage = document.getElementById('interest-game-image');
+  const interestGameName = document.getElementById('interest-game-name');
+  const interestGameDescription = document.getElementById('interest-game-description');
   const minimizedHud = document.getElementById('minimized-hud');
   const minimizedName = document.getElementById('minimized-name');
   const minimizedViews = document.getElementById('minimized-views');
@@ -125,6 +132,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  const gameInterestsContent = {
+    vrchat: {
+      name: 'VRChat',
+      image: 'assets/vrchat.jpg',
+      alt: 'VRChat artwork',
+      description: 'VRChat is a social virtual reality platform where users interact through custom 3D avatars in user-created worlds, offering limitless creative and social experiences.'
+    }
+  };
+
   const characterInterestsContent = {
     'mr-wolf': {
       name: 'Mr. Wolf (The Bad Guys)',
@@ -140,8 +156,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     },
     jack: {
       name: 'Jack (Beastars)',
-      image: 'https://static.wikia.nocookie.net/beastars-eng/images/6/6b/Volume_18.png/revision/latest?cb=20230905042407',
-      alt: 'Beastars volume 18 cover featuring Legoshi and Jack',
+      image: 'assets/jack.jpg',
+      alt: 'Jack from Beastars',
       description: 'Jack is dependable, warm, and genuinely kind, and he brings balance to Legoshi when things get dark. Their friendship is one of the strongest parts of the whole series.'
     }
   };
@@ -1100,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, moreMusicView, moreInterestsView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
@@ -1183,6 +1199,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     moreInterestsCharactersBackButton.addEventListener('click', () => showMoreSubview(moreInterestsView));
   }
 
+  if (moreInterestsGamesBackButton) {
+    moreInterestsGamesBackButton.addEventListener('click', () => showMoreSubview(moreInterestsCharactersView));
+  }
+
   function updateInterestTab(interestKey) {
     const interest = interestsContent[interestKey];
     if (!interest || !interestImage || !interestName || !interestDescription) return;
@@ -1253,6 +1273,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       tab.classList.toggle('active', isActive);
       tab.setAttribute('aria-selected', String(isActive));
     });
+
+    if (characterInterestsNextPageButton) {
+      characterInterestsNextPageButton.classList.toggle('is-visible', interestKey === 'jack');
+    }
+  }
+
+  function updateGameInterestTab(interestKey) {
+    const interest = gameInterestsContent[interestKey];
+    if (!interest || !interestGameImage || !interestGameName || !interestGameDescription) return;
+    const applyInterest = () => {
+      interestGameImage.src = interest.image;
+      interestGameImage.alt = interest.alt;
+      interestGameName.textContent = interest.name;
+      interestGameDescription.textContent = interest.description;
+      const interestItem = interestGameImage.closest('.interest-item');
+      if (interestItem) {
+        gsap.fromTo(interestItem, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' });
+      }
+    };
+
+    const interestItem = interestGameImage.closest('.interest-item');
+    if (interestItem) {
+      gsap.to(interestItem, {
+        autoAlpha: 0,
+        y: -6,
+        duration: 0.15,
+        ease: 'power2.in',
+        onComplete: applyInterest
+      });
+    } else {
+      applyInterest();
+    }
+
+    interestGameTabs.forEach((tab) => {
+      const isActive = tab.dataset.gameInterest === interestKey;
+      tab.classList.toggle('active', isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
   }
 
   interestTabs.forEach((tab) => {
@@ -1271,6 +1329,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  interestGameTabs.forEach((tab) => {
+    tab.addEventListener('click', () => updateGameInterestTab(tab.dataset.gameInterest));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateGameInterestTab(tab.dataset.gameInterest);
+    });
+  });
+
   if (interestsNextPageButton) {
     interestsNextPageButton.addEventListener('click', () => {
       showMoreSubview(moreInterestsCharactersView);
@@ -1278,8 +1344,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (characterInterestsNextPageButton) {
+    characterInterestsNextPageButton.addEventListener('click', () => {
+      showMoreSubview(moreInterestsGamesView);
+      updateGameInterestTab('vrchat');
+    });
+  }
+
   updateInterestTab('beastars');
   updateCharacterInterestTab('mr-wolf');
+  updateGameInterestTab('vrchat');
   renderArtistList();
   showMusicArtistList();
   refreshPlayPauseButton();

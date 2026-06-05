@@ -899,15 +899,23 @@
             gap: 14px;
         }
 
+        .interest-tab-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
         .interest-tabs {
             display: flex;
+            flex: 1;
             flex-wrap: wrap;
             gap: 8px;
             justify-content: center;
         }
 
         .interest-tab,
-        .interest-character-tab {
+        .interest-character-tab,
+        .interest-game-tab {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: rgba(255, 255, 255, 0.9);
@@ -919,7 +927,8 @@
         }
 
         .interest-tab.active,
-        .interest-character-tab.active {
+        .interest-character-tab.active,
+        .interest-game-tab.active {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.8);
             color: #fff;
@@ -927,8 +936,9 @@
 
         .interests-next-wrap {
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             min-height: 34px;
+            min-width: 72px;
         }
 
         .interest-next-button {
@@ -1261,6 +1271,16 @@
                 grid-template-columns: 1fr;
             }
 
+            .interest-tab-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .interests-next-wrap {
+                justify-content: center;
+                min-width: 0;
+            }
+
             .interest-item {
                 flex-direction: column;
                 align-items: stretch;
@@ -1494,14 +1514,16 @@
                 <button id="more-interests-back" class="subview-back" type="button">Back</button>
                 <h2 class="skills-title">Interests - Movies/Shows</h2>
                 <div class="interest-list">
-                    <div class="interest-tabs" role="tablist" aria-label="Movie and show interests">
-                        <button class="interest-tab active" data-interest="beastars" role="tab" aria-selected="true">Beastars</button>
-                        <button class="interest-tab" data-interest="fantastic-mr-fox" role="tab" aria-selected="false">Fantastic Mr. Fox</button>
-                        <button class="interest-tab" data-interest="the-bad-guys-1" role="tab" aria-selected="false">The Bad Guys (1)</button>
-                        <button class="interest-tab" data-interest="the-bad-guys-2" role="tab" aria-selected="false">The Bad Guys (2)</button>
-                    </div>
-                    <div class="interests-next-wrap">
-                        <button id="interests-next-page" class="interest-next-button" type="button">Next</button>
+                    <div class="interest-tab-row">
+                        <div class="interest-tabs" role="tablist" aria-label="Movie and show interests">
+                            <button class="interest-tab active" data-interest="beastars" role="tab" aria-selected="true">Beastars</button>
+                            <button class="interest-tab" data-interest="fantastic-mr-fox" role="tab" aria-selected="false">Fantastic Mr. Fox</button>
+                            <button class="interest-tab" data-interest="the-bad-guys-1" role="tab" aria-selected="false">The Bad Guys (1)</button>
+                            <button class="interest-tab" data-interest="the-bad-guys-2" role="tab" aria-selected="false">The Bad Guys (2)</button>
+                        </div>
+                        <div class="interests-next-wrap">
+                            <button id="interests-next-page" class="interest-next-button" type="button">Next</button>
+                        </div>
                     </div>
                     <div class="interest-item">
                         <img id="interest-image" src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/BEASTARS%2C_volume_1.jpg/250px-BEASTARS%2C_volume_1.jpg" alt="Beastars poster art">
@@ -1516,16 +1538,40 @@
                 <button id="more-interests-characters-back" class="subview-back" type="button">Back</button>
                 <h2 class="skills-title">Interests - Characters</h2>
                 <div class="interest-list">
-                    <div class="interest-tabs" role="tablist" aria-label="Character interests">
-                        <button class="interest-character-tab active" data-character-interest="mr-wolf" role="tab" aria-selected="true">Mr. Wolf</button>
-                        <button class="interest-character-tab" data-character-interest="legoshi" role="tab" aria-selected="false">Legoshi</button>
-                        <button class="interest-character-tab" data-character-interest="jack" role="tab" aria-selected="false">Jack</button>
+                    <div class="interest-tab-row">
+                        <div class="interest-tabs" role="tablist" aria-label="Character interests">
+                            <button class="interest-character-tab active" data-character-interest="mr-wolf" role="tab" aria-selected="true">Mr. Wolf</button>
+                            <button class="interest-character-tab" data-character-interest="legoshi" role="tab" aria-selected="false">Legoshi</button>
+                            <button class="interest-character-tab" data-character-interest="jack" role="tab" aria-selected="false">Jack</button>
+                        </div>
+                        <div class="interests-next-wrap">
+                            <button id="character-interests-next-page" class="interest-next-button" type="button">Next</button>
+                        </div>
                     </div>
                     <div class="interest-item">
                         <img id="interest-character-image" src="https://upload.wikimedia.org/wikipedia/en/thumb/0/00/The_Bad_Guys_poster.jpeg/250px-The_Bad_Guys_poster.jpeg" alt="Mr. Wolf character art">
                         <div class="interest-copy">
                             <h3 id="interest-character-name">Mr. Wolf (The Bad Guys)</h3>
                             <p id="interest-character-description">Mr. Wolf is smooth and confident on the outside, but what makes him great is how he uses that confidence to protect his crew and slowly choose empathy over ego.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="more-interests-games-view" class="more-view hidden">
+                <button id="more-interests-games-back" class="subview-back" type="button">Back</button>
+                <h2 class="skills-title">Interests - Games</h2>
+                <div class="interest-list">
+                    <div class="interest-tab-row">
+                        <div class="interest-tabs" role="tablist" aria-label="Game interests">
+                            <button class="interest-game-tab active" data-game-interest="vrchat" role="tab" aria-selected="true">VRChat</button>
+                        </div>
+                        <div class="interests-next-wrap" aria-hidden="true"></div>
+                    </div>
+                    <div class="interest-item">
+                        <img id="interest-game-image" src="assets/vrchat.jpg" alt="VRChat artwork">
+                        <div class="interest-copy">
+                            <h3 id="interest-game-name">VRChat</h3>
+                            <p id="interest-game-description">VRChat is a social virtual reality platform where users interact through custom 3D avatars in user-created worlds, offering limitless creative and social experiences.</p>
                         </div>
                     </div>
                 </div>
