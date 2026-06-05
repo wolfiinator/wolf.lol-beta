@@ -984,6 +984,54 @@
             flex-shrink: 0;
         }
 
+        .preset-list {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .preset-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Minecraftia', monospace;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .preset-card.active,
+        .preset-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.8);
+            color: #fff;
+        }
+
+        .preset-swatch {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+        }
+
+        .preset-swatch-blue {
+            background: linear-gradient(135deg, #00ced1, #1e3a8a);
+        }
+
+        .preset-swatch-orange {
+            background: linear-gradient(135deg, #ff8a1d, #ff4d00);
+        }
+
+        .preset-swatch-black {
+            background: linear-gradient(135deg, #070707, #454545);
+        }
+
         .interest-copy h3 {
             font-size: 24px;
             margin-bottom: 10px;
@@ -1290,6 +1338,10 @@
                 width: 100%;
             }
 
+            .preset-list {
+                grid-template-columns: 1fr;
+            }
+
             .skill-icon {
                 width: 18px;
                 height: 18px;
@@ -1474,6 +1526,25 @@
                 <div class="more-options">
                     <button id="open-more-music" class="more-option" type="button">Music Player</button>
                     <button id="open-more-interests" class="more-option" type="button">Interests</button>
+                    <button id="open-more-presets" class="more-option" type="button">Presets</button>
+                </div>
+            </div>
+            <div id="more-presets-view" class="more-view hidden">
+                <button id="more-presets-back" class="subview-back" type="button">Back</button>
+                <h2 class="skills-title">Presets</h2>
+                <div class="preset-list" role="group" aria-label="Profile presets">
+                    <button class="preset-card active" type="button" data-preset="blue" aria-pressed="true">
+                        <span class="preset-swatch preset-swatch-blue" aria-hidden="true"></span>
+                        <span>Blue</span>
+                    </button>
+                    <button class="preset-card" type="button" data-preset="orange" aria-pressed="false">
+                        <span class="preset-swatch preset-swatch-orange" aria-hidden="true"></span>
+                        <span>Orange</span>
+                    </button>
+                    <button class="preset-card" type="button" data-preset="black" aria-pressed="false">
+                        <span class="preset-swatch preset-swatch-black" aria-hidden="true"></span>
+                        <span>Black</span>
+                    </button>
                 </div>
             </div>
             <div id="more-music-view" class="more-view hidden">
@@ -1564,6 +1635,7 @@
                     <div class="interest-tab-row">
                         <div class="interest-tabs" role="tablist" aria-label="Game interests">
                             <button class="interest-game-tab active" data-game-interest="vrchat" role="tab" aria-selected="true">VRChat</button>
+                            <button class="interest-game-tab" data-game-interest="chilloutvr" role="tab" aria-selected="false">ChilloutVR</button>
                         </div>
                         <div class="interests-next-wrap" aria-hidden="true"></div>
                     </div>
