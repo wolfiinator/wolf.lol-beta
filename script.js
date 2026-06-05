@@ -728,7 +728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       background: 'assets/background.mp4',
       profile: 'assets/profile.gif',
       primaryColor: '#00CED1',
-      secondaryColor: '#FF6B9E'
+      secondaryColor: '#2563EB'
     },
     orange: {
       name: 'Orange',
