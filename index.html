@@ -233,143 +233,6 @@
             gap: 8px;
         }
 
-        .minimized-hud {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            right: 16px;
-            z-index: 40;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(-10px) scale(0.985);
-            transition: opacity 0.35s ease, transform 0.4s ease;
-        }
-
-        .minimized-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .minimized-pill {
-            background: rgba(8, 12, 24, 0.34);
-            border: 1px solid rgba(255, 255, 255, 0.33);
-            border-radius: 999px;
-            padding: 8px 12px;
-            backdrop-filter: blur(12px) saturate(130%);
-            pointer-events: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            text-transform: lowercase;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 0 24px rgba(255, 255, 255, 0.04);
-            animation: miniFloat 3.5s ease-in-out infinite;
-        }
-
-        .minimized-track {
-            align-self: center;
-            min-width: 320px;
-            max-width: min(720px, 100%);
-            justify-content: space-between;
-            animation-duration: 2.8s;
-        }
-
-        .minimized-hud.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .minimized-hud.is-visible .minimized-pill {
-            animation: miniEnter 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) both, miniFloat 3.5s ease-in-out 0.55s infinite;
-        }
-
-        .minimized-hud.is-visible .minimized-track {
-            animation: miniEnter 0.65s cubic-bezier(0.2, 0.9, 0.2, 1) 0.05s both, miniGlow 2.4s ease-in-out 0.7s infinite;
-        }
-
-        .minimized-track.hidden,
-        .minimized-hud.hidden {
-            display: none !important;
-        }
-
-        .mini-track-meta {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 0;
-        }
-
-        .mini-track-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 420px;
-        }
-
-        .mini-track-controls {
-            display: inline-flex;
-            gap: 6px;
-        }
-
-        .mini-track-controls button {
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            border-radius: 8px;
-            padding: 5px 8px;
-            cursor: pointer;
-            font-size: 11px;
-            font-family: 'Minecraftia', monospace;
-            transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease;
-        }
-
-        .mini-track-controls button:hover {
-            transform: translateY(-2px) scale(1.03);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
-        }
-
-        @keyframes miniEnter {
-            from {
-                opacity: 0;
-                transform: translateY(-10px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes miniFloat {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-2px);
-            }
-        }
-
-        @keyframes miniGlow {
-            0%, 100% {
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 0 rgba(59, 130, 246, 0.25);
-            }
-            50% {
-                box-shadow: 0 10px 34px rgba(0, 0, 0, 0.36), 0 0 20px rgba(59, 130, 246, 0.35);
-            }
-        }
-
-        .minimized-mode #profile-block,
-        .minimized-mode #skills-block,
-        .minimized-mode .top-controls,
-        .minimized-mode .theme-loop-indicator {
-            display: none !important;
-        }
-
         .profile-container {
             position: relative;
             width: 150px;
@@ -825,8 +688,8 @@
             width: 34px;
             height: 10px;
             border-radius: 999px;
-            background: linear-gradient(90deg, #1E3A8A, #2563EB);
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.7);
+            background: linear-gradient(90deg, var(--primary-color, #00CED1), var(--secondary-color, #FF6B9E));
+            box-shadow: 0 0 12px var(--primary-color, #00CED1);
             z-index: 20;
             animation: rain-loop 2.1s linear infinite;
         }
@@ -1358,23 +1221,6 @@
                 padding: 5px 8px;
             }
 
-            .minimized-hud {
-                top: 10px;
-                left: 10px;
-                right: 10px;
-            }
-
-            .minimized-track {
-                min-width: 0;
-                width: 100%;
-                flex-wrap: wrap;
-                gap: 8px;
-                justify-content: center;
-            }
-
-            .mini-track-title {
-                max-width: 100%;
-            }
 
             .theme-button {
                 width: 28px;
@@ -1450,7 +1296,6 @@
 
         <div id="profile-block">
             <div class="card-actions">
-                <button id="minimize-profile" class="results-toggle" type="button">Minimize</button>
                 <button id="open-more" class="results-toggle">More</button>
             </div>
             <div class="profile-header">
@@ -1653,26 +1498,7 @@
 
         <div class="theme-loop-indicator" aria-hidden="true"></div>
 
-        <div id="minimized-hud" class="minimized-hud hidden">
-            <div class="minimized-row">
-                <div id="minimized-name" class="minimized-pill">wolf.</div>
-                <div class="minimized-pill">
-                    <span id="minimized-views">views: 192,729</span>
-                    <button id="maximize-profile" class="results-toggle" type="button">Maximize</button>
-                </div>
-            </div>
-            <div id="minimized-track" class="minimized-pill minimized-track hidden">
-                <div class="mini-track-meta">
-                    <span id="minimized-track-title" class="mini-track-title">not playing</span>
-                    <span id="minimized-track-time">00:00 / 00:00</span>
-                </div>
-                <div class="mini-track-controls">
-                    <button id="mini-prev" type="button">Prev</button>
-                    <button id="mini-play-pause" type="button">Play</button>
-                    <button id="mini-next" type="button">Next</button>
-                </div>
-            </div>
-        </div>
+
 
 
         <div class="top-controls">
