@@ -100,68 +100,73 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestGameName = document.getElementById('interest-game-name');
   const interestGameDescription = document.getElementById('interest-game-description');
   const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
-  const lastFmCover = document.getElementById('lastfm-cover');
-  const lastFmLabel = document.getElementById('lastfm-label');
-  const lastFmSong = document.getElementById('lastfm-song');
-  const lastFmArtist = document.getElementById('lastfm-artist');
-  const lastFmUsername = 'wendall.gt';
-  const lastFmApiKey = 'b25b959554ed76058ac220b7b2e0a026';
+  const discordAvatar = document.getElementById('discord-avatar');
+  const discordLabel = document.getElementById('discord-label');
+  const discordName = document.getElementById('discord-name');
+  const discordStatus = document.getElementById('discord-status');
+  const discordUserId = '222604250667155456';
+  const discordStatusLabels = {
+    online: 'online',
+    idle: 'idle',
+    dnd: 'do not disturb',
+    offline: 'offline'
+  };
 
+  function getDiscordAvatarUrl(user) {
+    if (!user?.id || !user?.avatar) return 'assets/profile.gif';
 
-  async function getLastFmNowPlaying() {
-    const params = new URLSearchParams({
-      method: 'user.getrecenttracks',
-      user: lastFmUsername,
-      api_key: lastFmApiKey,
-      format: 'json',
-      limit: '1'
-    });
+    const extension = user.avatar.startsWith('a_') ? 'gif' : 'png';
+    return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${extension}?size=128`;
+  }
 
+  function getDiscordStatusText(presence) {
+    const customStatus = presence?.activities?.find((activity) => activity.type === 4);
+    const emoji = customStatus?.emoji?.name || '';
+    const state = customStatus?.state || '';
+    const status = discordStatusLabels[presence?.discord_status] || 'offline';
+    const customText = [emoji, state].filter(Boolean).join(' ').trim();
+
+    return customText || status;
+  }
+
+  async function getDiscordPresence() {
     try {
-      const response = await fetch(`https://ws.audioscrobbler.com/2.0/?${params.toString()}`, { cache: 'no-store' });
+      const response = await fetch(`https://api.lanyard.rest/v1/users/${discordUserId}`, { cache: 'no-store' });
       if (!response.ok) return null;
-      const data = await response.json();
-      const tracks = data?.recenttracks?.track;
-      if (data?.error || !Array.isArray(tracks) || tracks.length === 0) return null;
 
-      const track = tracks[0];
-      const images = Array.isArray(track.image) ? track.image : [];
-      const coverImage = [...images].reverse().find((image) => image?.['#text']);
-      const cover = coverImage?.['#text'] || 'assets/profile.gif';
-
-      return {
-        title: track.name || 'Unknown song',
-        artist: track.artist?.['#text'] || 'Unknown artist',
-        cover,
-        nowPlaying: track['@attr']?.nowplaying === 'true'
-      };
+      const payload = await response.json();
+      return payload?.success ? payload.data : null;
     } catch (error) {
-      console.error('Last.fm presence failed:', error);
+      console.error('Discord presence failed:', error);
       return null;
     }
   }
 
-  function renderLastFmPresence(track) {
-    if (!lastFmCover || !lastFmLabel || !lastFmSong || !lastFmArtist) return;
+  function renderDiscordPresence(presence) {
+    if (!discordAvatar || !discordLabel || !discordName || !discordStatus) return;
 
-    if (!track) {
-      lastFmCover.src = 'assets/profile.gif';
-      lastFmCover.alt = 'Last.fm unavailable';
-      lastFmLabel.textContent = 'last.fm';
-      lastFmSong.textContent = 'track unavailable';
-      lastFmArtist.textContent = lastFmUsername;
+    if (!presence) {
+      discordAvatar.src = 'assets/profile.gif';
+      discordAvatar.alt = 'Discord profile unavailable';
+      discordLabel.textContent = 'discord profile';
+      discordName.textContent = 'profile unavailable';
+      discordStatus.textContent = `user ${discordUserId}`;
       return;
     }
 
-    lastFmCover.src = track.cover || 'assets/profile.gif';
-    lastFmCover.alt = `${track.title} album cover`;
-    lastFmLabel.textContent = track.nowPlaying ? 'listening now' : 'last played';
-    lastFmSong.textContent = track.title;
-    lastFmArtist.textContent = track.artist;
+    const user = presence.discord_user || {};
+    const displayName = user.global_name || user.display_name || user.username || 'wolf.';
+    const status = discordStatusLabels[presence.discord_status] || 'offline';
+
+    discordAvatar.src = getDiscordAvatarUrl(user);
+    discordAvatar.alt = `${displayName} Discord avatar`;
+    discordLabel.textContent = `discord • ${status}`;
+    discordName.textContent = displayName;
+    discordStatus.textContent = getDiscordStatusText(presence);
   }
 
-  async function updateLastFmPresence() {
-    renderLastFmPresence(await getLastFmNowPlaying());
+  async function updateDiscordPresence() {
+    renderDiscordPresence(await getDiscordPresence());
   }
 
   const interestsContent = {
@@ -1177,8 +1182,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     boostOrbit();
   });
 
-  updateLastFmPresence();
-  setInterval(updateLastFmPresence, 30000);
+  updateDiscordPresence();
+  setInterval(updateDiscordPresence, 30000);
 
  
   let activeMoreSubview = moreHomeView;

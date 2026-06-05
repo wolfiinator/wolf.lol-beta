@@ -638,7 +638,7 @@
             opacity: 1;
         }
 
-        .lastfm-presence {
+        .discord-presence {
             position: absolute;
             right: 20px;
             bottom: 20px;
@@ -659,7 +659,7 @@
             overflow: hidden;
         }
 
-        .lastfm-cover {
+        .discord-avatar {
             width: 58px;
             height: 58px;
             border-radius: 10px;
@@ -668,34 +668,34 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        .lastfm-copy {
+        .discord-copy {
             min-width: 0;
             display: flex;
             flex-direction: column;
             gap: 3px;
         }
 
-        .lastfm-label {
+        .discord-label {
             color: rgba(255, 255, 255, 0.55);
             font-size: 9px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
-        .lastfm-song,
-        .lastfm-artist {
+        .discord-name,
+        .discord-status {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .lastfm-song {
+        .discord-name {
             color: #fff;
             font-size: 12px;
             line-height: 1.2;
         }
 
-        .lastfm-artist {
+        .discord-status {
             color: rgba(255, 255, 255, 0.72);
             font-size: 11px;
         }
@@ -1485,7 +1485,7 @@
                 height: 34px;
             }
 
-            .lastfm-presence {
+            .discord-presence {
                 position: static;
                 grid-template-columns: 48px minmax(0, 1fr);
                 align-self: stretch;
@@ -1493,7 +1493,7 @@
                 margin: 0 0 8px;
             }
 
-            .lastfm-cover {
+            .discord-avatar {
                 width: 48px;
                 height: 48px;
             }
@@ -1697,12 +1697,12 @@
             <div class="bio-separator"></div>
 
             <div class="profile-footer">
-                <section id="lastfm-presence" class="lastfm-presence" aria-label="Last.fm now playing">
-                    <img id="lastfm-cover" class="lastfm-cover" src="assets/profile.gif" alt="Last.fm album cover">
-                    <div class="lastfm-copy">
-                        <span id="lastfm-label" class="lastfm-label">last.fm</span>
-                        <strong id="lastfm-song" class="lastfm-song">loading track...</strong>
-                        <span id="lastfm-artist" class="lastfm-artist">wendall.gt</span>
+                <section id="discord-presence" class="discord-presence" aria-label="Discord profile status">
+                    <img id="discord-avatar" class="discord-avatar" src="assets/profile.gif" alt="Discord avatar">
+                    <div class="discord-copy">
+                        <span id="discord-label" class="discord-label">discord profile</span>
+                        <strong id="discord-name" class="discord-name">loading profile...</strong>
+                        <span id="discord-status" class="discord-status">checking status</span>
                     </div>
                 </section>
 
