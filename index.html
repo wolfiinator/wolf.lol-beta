@@ -212,6 +212,7 @@
 
         .profile-header {
             display: flex;
+            flex-wrap: wrap;
             align-items: flex-start;
             gap: 15px;
             position: relative;
@@ -369,6 +370,11 @@
             -webkit-mask: var(--badge-icon) center / contain no-repeat;
             mask: var(--badge-icon) center / contain no-repeat;
             filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary-color, #00CED1) 70%, transparent));
+        }
+
+        .badge-og {
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
         }
 
         body[data-preset="black"] .badge {
@@ -628,15 +634,14 @@
         }
 
         .presence-stack {
-            position: absolute;
-            right: 20px;
-            bottom: 20px;
             z-index: 2;
             display: flex;
+            flex: 0 0 310px;
             flex-direction: column;
             gap: 8px;
-            width: min(310px, 100%);
-            align-self: flex-end;
+            width: 310px;
+            margin-top: 42px;
+            margin-left: auto;
             pointer-events: auto;
         }
 
@@ -648,10 +653,10 @@
             width: 100%;
             padding: 8px 10px;
             border-radius: 14px;
-            border: 1px solid color-mix(in srgb, var(--primary-color, #00CED1) 30%, transparent);
+            border: 1px solid transparent;
             background: transparent;
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.12), 0 0 16px color-mix(in srgb, var(--primary-color, #00CED1) 20%, transparent);
-            backdrop-filter: blur(2px);
+            box-shadow: none;
+            backdrop-filter: none;
             overflow: hidden;
         }
 
@@ -665,8 +670,8 @@
             height: 58px;
             border-radius: 10px;
             object-fit: cover;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid color-mix(in srgb, var(--primary-color, #00CED1) 30%, rgba(255, 255, 255, 0.18));
+            background: transparent;
+            border: 1px solid transparent;
         }
 
         .discord-copy,
@@ -1043,14 +1048,15 @@
         }
 
         .interest-tab-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr) 72px;
             align-items: flex-start;
             gap: 12px;
         }
 
         .interest-tabs {
+            grid-column: 2;
             display: flex;
-            flex: 1;
             flex-wrap: wrap;
             gap: 8px;
             justify-content: center;
@@ -1078,6 +1084,7 @@
         }
 
         .interests-next-wrap {
+            grid-column: 3;
             display: flex;
             justify-content: flex-end;
             min-height: 34px;
@@ -1541,8 +1548,14 @@
             }
 
             .interest-tab-row {
+                display: flex;
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .interest-tabs,
+            .interests-next-wrap {
+                grid-column: auto;
             }
 
             .interests-next-wrap {
@@ -1618,6 +1631,13 @@
                 font-size: 12px;
             }
 
+            .presence-stack {
+                flex: 1 1 100%;
+                width: 100%;
+                margin-top: 0;
+                margin-left: 0;
+            }
+
             
             #start-text {
                 font-size: 18px;
@@ -1684,7 +1704,7 @@
                                         <span class="tooltip">owner.</span>
                                     </div>
                                     <div class="badge-container">
-                                        <span class="badge" style="--badge-icon: url('assets/og.png');" aria-label="og badge"></span>
+                                        <span class="badge badge-og" style="--badge-icon: url('assets/og.png');" aria-label="og badge"></span>
                                         <span class="tooltip">og.</span>
                                     </div>
                                     <div class="badge-container">
@@ -1706,11 +1726,6 @@
                     <div id="profile-clock"></div>
                     <div id="profile-bio"></div>
                 </div>
-            </div>
-
-            <div class="bio-separator"></div>
-
-            <div class="profile-footer">
                 <div class="presence-stack" aria-label="Profile rich presence">
                     <section id="spotify-presence" class="spotify-presence presence-card hidden" aria-label="Spotify listening status">
                         <img id="spotify-avatar" class="spotify-avatar" src="assets/profile.gif" alt="Spotify album art">
@@ -1729,7 +1744,11 @@
                         </div>
                     </section>
                 </div>
+            </div>
 
+            <div class="bio-separator"></div>
+
+            <div class="profile-footer">
                 <div class="social-links">
                     <a href="https://www.roblox.com/users/1431265/profile" target="_blank" class="social-link-btn" aria-label="Roblox profile">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.4 2.5h15.2l1.9 1.9v15.2l-1.9 1.9H4.4L2.5 19.6V4.4L4.4 2.5zm2.2 2.2v14.6h10.8V4.7H6.6zm2.9 2.9h5.1v5.1H9.5V7.6z"/></svg>
