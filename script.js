@@ -859,11 +859,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       secondaryColor: '#FF4D00'
     },
     black: {
-      name: 'Black',
+      name: 'Monochrome',
       background: 'assets/background3.mp4',
       profile: 'assets/pfp3.jpg',
       primaryColor: '#E5E7EB',
       secondaryColor: '#6B7280'
+    },
+    dark: {
+      name: 'Dark',
+      background: 'assets/background4.mp4',
+      profile: 'assets/pfp4.jpg',
+      primaryColor: '#A78BFA',
+      secondaryColor: '#1F2937'
     }
   };
   const presetStorageKey = 'wolf-profile-preset';
