@@ -931,11 +931,19 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
+        .guestbook-form.guestbook-form--compact {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
         .guestbook-compose-avatar {
             width: 36px;
             height: 36px;
             border: 1px solid rgba(255, 255, 255, 0.26);
             border-radius: 2px;
+        }
+
+        .guestbook-form--compact .guestbook-compose-avatar {
+            display: none;
         }
 
         .guestbook-compose-main {
@@ -1022,6 +1030,11 @@
             background: transparent;
         }
 
+        .guestbook-message--compact {
+            display: block;
+            padding-left: 0;
+        }
+
         .guestbook-avatar-link,
         .guestbook-username-link {
             color: inherit;
@@ -1051,6 +1064,11 @@
             margin-bottom: 3px;
         }
 
+        .guestbook-message--compact .guestbook-message-head {
+            display: inline;
+            margin: 0 6px 0 0;
+        }
+
         .guestbook-username {
             display: inline-block;
             max-width: 100%;
@@ -1070,12 +1088,23 @@
             margin-top: 1px;
         }
 
+        .guestbook-message--compact .guestbook-time {
+            display: inline;
+            margin: 0 0 0 5px;
+            font-size: 9px;
+            vertical-align: baseline;
+        }
+
         .guestbook-text {
             color: rgba(255, 255, 255, 0.88);
             font-size: 11px;
             line-height: 1.42;
             overflow-wrap: anywhere;
             white-space: pre-wrap;
+        }
+
+        .guestbook-message--compact .guestbook-text {
+            display: inline;
         }
 
         .more-messages-view {
@@ -2175,7 +2204,7 @@
         const defaultCommentProfile = {
             username: "guest",
             profileLink: "",
-            avatarUrl: fallbackAvatar
+            avatarUrl: ""
         };
         const dateFormatter = new Intl.DateTimeFormat(undefined, {
             month: "short",
@@ -2231,24 +2260,30 @@
         let commentProfile = loadCommentProfile();
 
         function getProfileAvatarUrl() {
-            return commentProfile.avatarUrl || fallbackAvatar;
+            return commentProfile.avatarUrl || "";
+        }
+
+        function hasCustomAvatarUrl(value) {
+            return Boolean(value && value !== fallbackAvatar);
         }
 
         function applyCommentProfile() {
             const avatarUrl = getProfileAvatarUrl();
+            const hasAvatar = hasCustomAvatarUrl(avatarUrl);
             profileUsernameInput.value = commentProfile.username === defaultCommentProfile.username ? "" : commentProfile.username;
             profileLinkInput.value = commentProfile.profileLink || "";
-            profileAvatarInput.value = commentProfile.avatarUrl === fallbackAvatar ? "" : commentProfile.avatarUrl;
-            profileAvatar.src = avatarUrl;
-            composeAvatar.src = avatarUrl;
-            profileAvatar.alt = `${commentProfile.username || "guest"}'s comment profile picture`;
+            profileAvatarInput.value = hasAvatar ? avatarUrl : "";
+            profileAvatar.src = hasAvatar ? avatarUrl : fallbackAvatar;
+            composeAvatar.src = hasAvatar ? avatarUrl : fallbackAvatar;
+            profileAvatar.alt = hasAvatar ? `${commentProfile.username || "guest"}'s comment profile picture` : "No comment profile picture set";
             composeAvatar.alt = profileAvatar.alt;
+            form.classList.toggle("guestbook-form--compact", !hasAvatar);
         }
 
         function saveCommentProfile() {
             const username = cleanText(profileUsernameInput.value, 24) || defaultCommentProfile.username;
             const profileLink = profileLinkInput.value.trim();
-            const avatarUrl = profileAvatarInput.value.trim() || fallbackAvatar;
+            const avatarUrl = profileAvatarInput.value.trim();
 
             if (!isHttpUrl(profileLink)) {
                 setStatus("profile link must start with http or https.");
@@ -2297,26 +2332,35 @@
                 const article = document.createElement("article");
                 article.className = "guestbook-message";
 
-                const avatar = document.createElement("img");
-                avatar.className = "guestbook-avatar";
-                avatar.src = message.avatarUrl || fallbackAvatar;
-                avatar.alt = `${message.username || "guest"}'s pfp`;
-                avatar.loading = "lazy";
-                avatar.referrerPolicy = "no-referrer";
-                avatar.addEventListener("error", () => {
-                    avatar.src = fallbackAvatar;
-                }, { once: true });
-
+                const messageAvatarUrl = typeof message.avatarUrl === "string" ? message.avatarUrl : "";
+                const hasMessageAvatar = hasCustomAvatarUrl(messageAvatarUrl);
                 const profileLink = typeof message.profileLink === "string" ? message.profileLink : "";
-                let avatarNode = avatar;
-                if (isHttpUrl(profileLink) && profileLink) {
-                    const avatarLink = document.createElement("a");
-                    avatarLink.className = "guestbook-avatar-link";
-                    avatarLink.href = profileLink;
-                    avatarLink.target = "_blank";
-                    avatarLink.rel = "noopener noreferrer";
-                    avatarLink.append(avatar);
-                    avatarNode = avatarLink;
+                let avatarNode = null;
+
+                if (hasMessageAvatar) {
+                    const avatar = document.createElement("img");
+                    avatar.className = "guestbook-avatar";
+                    avatar.src = messageAvatarUrl;
+                    avatar.alt = `${message.username || "guest"}'s pfp`;
+                    avatar.loading = "lazy";
+                    avatar.referrerPolicy = "no-referrer";
+                    avatar.addEventListener("error", () => {
+                        article.classList.add("guestbook-message--compact");
+                        avatarNode?.remove();
+                    }, { once: true });
+
+                    avatarNode = avatar;
+                    if (isHttpUrl(profileLink) && profileLink) {
+                        const avatarLink = document.createElement("a");
+                        avatarLink.className = "guestbook-avatar-link";
+                        avatarLink.href = profileLink;
+                        avatarLink.target = "_blank";
+                        avatarLink.rel = "noopener noreferrer";
+                        avatarLink.append(avatar);
+                        avatarNode = avatarLink;
+                    }
+                } else {
+                    article.classList.add("guestbook-message--compact");
                 }
 
                 const main = document.createElement("div");
@@ -2355,7 +2399,11 @@
 
                 head.append(usernameNode, time);
                 main.append(head, text);
-                article.append(avatarNode, main);
+                if (avatarNode) {
+                    article.append(avatarNode, main);
+                } else {
+                    article.append(main);
+                }
                 fragment.append(article);
             });
 
