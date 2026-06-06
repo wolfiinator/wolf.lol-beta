@@ -104,6 +104,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const discordLabel = document.getElementById('discord-label');
   const discordName = document.getElementById('discord-name');
   const discordStatus = document.getElementById('discord-status');
+  const spotifyPresence = document.getElementById('spotify-presence');
+  const spotifyAvatar = document.getElementById('spotify-avatar');
+  const spotifyLabel = document.getElementById('spotify-label');
+  const spotifySong = document.getElementById('spotify-song');
+  const spotifyArtist = document.getElementById('spotify-artist');
   const discordUserId = '222604250667155456';
   const discordStatusLabels = {
     online: 'online',
@@ -129,6 +134,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     return customText || status;
   }
 
+  function getDiscordRichActivity(presence) {
+    return presence?.activities?.find((activity) => {
+      if (activity.type === 4) return false;
+      if (presence?.spotify && activity.name?.toLowerCase() === 'spotify') return false;
+      return activity.name || activity.details || activity.state;
+    }) || null;
+  }
+
+  function getDiscordActivityImageUrl(activity, fallbackUser) {
+    const image = activity?.assets?.large_image || activity?.assets?.small_image;
+    if (!image) return getDiscordAvatarUrl(fallbackUser);
+    if (image.startsWith('http')) return image;
+    if (image.startsWith('mp:')) return `https://media.discordapp.net/${image.slice(3)}`;
+    if (activity.application_id) {
+      return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${image}.png`;
+    }
+    return getDiscordAvatarUrl(fallbackUser);
+  }
+
   async function getDiscordPresence() {
     try {
       const response = await fetch(`https://api.lanyard.rest/v1/users/${discordUserId}`, { cache: 'no-store' });
@@ -142,6 +166,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  function renderSpotifyPresence(presence) {
+    if (!spotifyPresence || !spotifyAvatar || !spotifyLabel || !spotifySong || !spotifyArtist) return;
+
+    const spotify = presence?.spotify;
+    if (!spotify) {
+      spotifyPresence.classList.add('hidden');
+      spotifyAvatar.src = 'assets/profile.gif';
+      spotifySong.textContent = 'not listening';
+      spotifyArtist.textContent = 'spotify is idle';
+      return;
+    }
+
+    spotifyPresence.classList.remove('hidden');
+    spotifyAvatar.src = spotify.album_art_url || 'assets/profile.gif';
+    spotifyAvatar.alt = `${spotify.song || 'Spotify'} album art`;
+    spotifyLabel.textContent = 'spotify • listening';
+    spotifySong.textContent = spotify.song || 'unknown song';
+    spotifyArtist.textContent = [spotify.artist, spotify.album].filter(Boolean).join(' • ') || 'unknown artist';
+  }
+
   function renderDiscordPresence(presence) {
     if (!discordAvatar || !discordLabel || !discordName || !discordStatus) return;
 
@@ -151,6 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       discordLabel.textContent = 'discord profile';
       discordName.textContent = 'profile unavailable';
       discordStatus.textContent = `user ${discordUserId}`;
+      renderSpotifyPresence(null);
       return;
     }
 
@@ -158,11 +203,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const displayName = user.global_name || user.display_name || user.username || 'wolf.';
     const status = discordStatusLabels[presence.discord_status] || 'offline';
 
-    discordAvatar.src = getDiscordAvatarUrl(user);
-    discordAvatar.alt = `${displayName} Discord avatar`;
-    discordLabel.textContent = `discord • ${status}`;
-    discordName.textContent = displayName;
-    discordStatus.textContent = getDiscordStatusText(presence);
+    const activity = getDiscordRichActivity(presence);
+    const activityText = [activity?.details, activity?.state].filter(Boolean).join(' • ');
+
+    discordAvatar.src = getDiscordActivityImageUrl(activity, user);
+    discordAvatar.alt = activity ? `${activity.name} Discord rich presence image` : `${displayName} Discord avatar`;
+    discordLabel.textContent = activity ? `discord • ${status}` : `discord profile • ${status}`;
+    discordName.textContent = activity?.name || displayName;
+    discordStatus.textContent = activityText || getDiscordStatusText(presence);
+    renderSpotifyPresence(presence);
   }
 
   async function updateDiscordPresence() {
@@ -861,6 +910,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     document.documentElement.style.setProperty('--primary-color', preset.primaryColor);
     document.documentElement.style.setProperty('--secondary-color', preset.secondaryColor);
+    document.body.dataset.preset = activePresetKey;
     refreshPresetButtons();
   }
 
