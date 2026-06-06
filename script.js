@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const glitchOverlay = document.querySelector('.glitch-overlay');
   const profileBlock = document.getElementById('profile-block');
   const skillsBlock = document.getElementById('skills-block');
+  const guestbookPanel = document.getElementById('guestbook-panel');
   const profilePicture = document.querySelector('.profile-picture');
   const profileContainer = document.querySelector('.profile-container');
   const socialIcons = document.querySelectorAll('.social-link-btn');
@@ -982,56 +983,45 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
 
+  const setPanelTransparency = (panel, opacity) => {
+    if (!panel) {
+      return;
+    }
+
+    if (opacity == 0) {
+      panel.style.background = 'rgba(0, 0, 0, 0)';
+      panel.style.borderOpacity = '0';
+      panel.style.borderColor = 'transparent';
+      panel.style.backdropFilter = 'none';
+      return;
+    }
+
+    panel.style.background = `rgba(0, 0, 0, ${opacity})`;
+    panel.style.borderOpacity = opacity;
+    panel.style.borderColor = '';
+    panel.style.backdropFilter = `blur(${10 * opacity}px)`;
+  };
+
   transparencySlider.addEventListener('input', () => {
     const opacity = transparencySlider.value;
-    if (opacity == 0) {
-      profileBlock.style.background = 'rgba(0, 0, 0, 0)';
-      profileBlock.style.borderOpacity = '0';
-      profileBlock.style.borderColor = 'transparent';
-      profileBlock.style.backdropFilter = 'none';
-      skillsBlock.style.background = 'rgba(0, 0, 0, 0)';
-      skillsBlock.style.borderOpacity = '0';
-      skillsBlock.style.borderColor = 'transparent';
-      skillsBlock.style.backdropFilter = 'none';
-   
-      profileBlock.style.pointerEvents = 'auto';
-      socialIcons.forEach(icon => {
-        icon.style.pointerEvents = 'auto';
-        icon.style.opacity = '1';
-      });
-      badges.forEach(badge => {
-        badge.style.pointerEvents = 'auto';
-        badge.style.opacity = '1';
-      });
-      profilePicture.style.pointerEvents = 'auto';
-      profilePicture.style.opacity = '1';
-      profileName.style.opacity = '1';
-      profileBio.style.opacity = '1';
-      visitorCount.style.opacity = '1';
-    } else {
-      profileBlock.style.background = `rgba(0, 0, 0, ${opacity})`;
-      profileBlock.style.borderOpacity = opacity;
-      profileBlock.style.borderColor = '';
-      profileBlock.style.backdropFilter = `blur(${10 * opacity}px)`;
-      skillsBlock.style.background = `rgba(0, 0, 0, ${opacity})`;
-      skillsBlock.style.borderOpacity = opacity;
-      skillsBlock.style.borderColor = '';
-      skillsBlock.style.backdropFilter = `blur(${10 * opacity}px)`;
-      profileBlock.style.pointerEvents = 'auto';
-      socialIcons.forEach(icon => {
-        icon.style.pointerEvents = 'auto';
-        icon.style.opacity = '1';
-      });
-      badges.forEach(badge => {
-        badge.style.pointerEvents = 'auto';
-        badge.style.opacity = '1';
-      });
-      profilePicture.style.pointerEvents = 'auto';
-      profilePicture.style.opacity = '1';
-      profileName.style.opacity = '1';
-      profileBio.style.opacity = '1';
-      visitorCount.style.opacity = '1';
-    }
+    setPanelTransparency(profileBlock, opacity);
+    setPanelTransparency(skillsBlock, opacity);
+    setPanelTransparency(guestbookPanel, opacity);
+
+    profileBlock.style.pointerEvents = 'auto';
+    socialIcons.forEach(icon => {
+      icon.style.pointerEvents = 'auto';
+      icon.style.opacity = '1';
+    });
+    badges.forEach(badge => {
+      badge.style.pointerEvents = 'auto';
+      badge.style.opacity = '1';
+    });
+    profilePicture.style.pointerEvents = 'auto';
+    profilePicture.style.opacity = '1';
+    profileName.style.opacity = '1';
+    profileBio.style.opacity = '1';
+    visitorCount.style.opacity = '1';
   });
 
 
