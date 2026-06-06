@@ -377,7 +377,8 @@
             mask-size: 100% 100%;
         }
 
-        body[data-preset="black"] .badge {
+        body[data-preset="black"] .badge,
+        body[data-preset="dark"] .badge {
             background: #E5E7EB;
             filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.45));
         }
@@ -1328,6 +1329,10 @@
             background: linear-gradient(135deg, #070707, #454545);
         }
 
+        .preset-swatch-dark {
+            background: linear-gradient(135deg, #0f172a, #7c3aed);
+        }
+
         .interest-copy h3 {
             font-size: 24px;
             margin-bottom: 10px;
@@ -1992,7 +1997,11 @@
                     </button>
                     <button class="preset-card" type="button" data-preset="black" aria-pressed="false">
                         <span class="preset-swatch preset-swatch-black" aria-hidden="true"></span>
-                        <span>Black</span>
+                        <span>Monochrome</span>
+                    </button>
+                    <button class="preset-card" type="button" data-preset="dark" aria-pressed="false">
+                        <span class="preset-swatch preset-swatch-dark" aria-hidden="true"></span>
+                        <span>Dark</span>
                     </button>
                 </div>
             </div>
