@@ -776,19 +776,19 @@
             top: 50%;
             left: 100%;
             right: auto;
-            width: 360px;
+            width: 430px;
             height: 100%;
             max-height: 100%;
             display: grid;
             grid-template-columns: 1fr;
             grid-template-rows: auto auto minmax(0, 1fr);
-            gap: 12px;
-            padding: 16px;
+            gap: 14px;
+            padding: 0;
             border-radius: 0 15px 15px 0;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(9, 9, 9, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-left-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 35%, transparent);
+            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 25%, transparent);
             backdrop-filter: blur(10px);
             z-index: 19;
             pointer-events: auto;
@@ -804,77 +804,178 @@
         }
 
         .guestbook-head {
+            position: relative;
+            display: flex;
             grid-column: 1;
             grid-row: 1;
+            align-items: center;
+            justify-content: space-between;
             min-width: 0;
+            padding: 16px 18px 0;
         }
 
         .guestbook-title {
-            font-size: 18px;
-            letter-spacing: 1px;
-            color: #fff;
-            text-shadow: 0 0 10px var(--primary-color, #00CED1);
+            color: #d7d7d7;
+            font-size: 17px;
+            letter-spacing: 0;
+            text-shadow: none;
+            text-transform: none;
         }
 
-        .guestbook-subtitle {
-            color: rgba(255, 255, 255, 0.68);
-            font-size: 11px;
-            line-height: 1.45;
+        .comment-profile-controls {
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .comment-profile-toggle {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.55);
+        }
+
+        .comment-profile-toggle img,
+        .guestbook-compose-avatar,
+        .guestbook-avatar {
+            display: block;
+            object-fit: cover;
+            background: linear-gradient(135deg, #232323, #090909);
+        }
+
+        .comment-profile-toggle img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .comment-profile-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(300px, 76vw);
+            display: grid;
+            gap: 7px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            background: rgba(12, 12, 12, 0.76);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.48), inset 0 1px rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            z-index: 6;
+        }
+
+        .comment-profile-menu h3 {
+            margin: 0 0 3px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .comment-profile-menu label {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 9px;
+        }
+
+        .comment-profile-menu input,
+        .guestbook-form textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: 'Minecraftia', monospace;
+            outline: none;
+        }
+
+        .comment-profile-menu input {
+            min-height: 32px;
+            border-radius: 8px;
+            padding: 8px 9px;
+            font-size: 10px;
+        }
+
+        .comment-profile-menu input:focus,
+        .guestbook-form textarea:focus {
+            border-color: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 12px color-mix(in srgb, var(--primary-color, #00CED1) 28%, transparent);
+        }
+
+        .comment-profile-menu input::placeholder,
+        .guestbook-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.46);
+        }
+
+        .comment-profile-save {
             margin-top: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Minecraftia', monospace;
+            font-size: 10px;
+            padding: 8px 10px;
         }
 
         .guestbook-form {
             display: grid;
             grid-column: 1;
             grid-row: 2;
-            gap: 8px;
+            grid-template-columns: 42px minmax(0, 1fr);
+            gap: 10px;
+            min-width: 0;
+            padding: 0 18px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .guestbook-compose-avatar {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            border-radius: 2px;
+        }
+
+        .guestbook-compose-main {
             min-width: 0;
         }
 
-        .guestbook-form input,
         .guestbook-form textarea {
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            padding: 9px 10px;
-            font-family: 'Minecraftia', monospace;
-            font-size: 11px;
-            outline: none;
-        }
-
-        .guestbook-form textarea {
-            min-height: 82px;
+            min-height: 38px;
+            max-height: 94px;
             resize: vertical;
+            border-radius: 0;
+            padding: 11px 12px;
+            font-size: 11px;
+            line-height: 1.35;
+            background: rgba(255, 255, 255, 0.11);
         }
 
-        .guestbook-form input:focus,
-        .guestbook-form textarea:focus {
-            border-color: var(--primary-color, #00CED1);
-            box-shadow: 0 0 12px color-mix(in srgb, var(--primary-color, #00CED1) 40%, transparent);
-        }
-
-        .guestbook-form input::placeholder,
-        .guestbook-form textarea::placeholder {
-            color: rgba(255, 255, 255, 0.48);
+        .guestbook-compose-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 7px;
         }
 
         .guestbook-submit {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--primary-color, #00CED1), var(--secondary-color, #2563EB));
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 2px;
+            background: linear-gradient(180deg, rgba(92, 107, 127, 0.95), rgba(54, 64, 78, 0.95));
             color: #fff;
             cursor: pointer;
             font-family: 'Minecraftia', monospace;
-            font-size: 12px;
-            padding: 9px 14px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            font-size: 10px;
+            padding: 7px 14px;
+            transition: transform 0.2s ease, filter 0.2s ease;
         }
 
-        .guestbook-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 45%, transparent);
+        .guestbook-submit:hover:not(:disabled),
+        .comment-profile-save:hover {
+            filter: brightness(1.16);
         }
 
         .guestbook-submit:disabled {
@@ -883,9 +984,10 @@
         }
 
         .guestbook-status {
-            min-height: 15px;
-            color: rgba(255, 255, 255, 0.74);
-            font-size: 10px;
+            min-height: 14px;
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 9px;
+            line-height: 1.35;
         }
 
         .guestbook-messages {
@@ -894,9 +996,10 @@
             grid-row: 3;
             min-height: 0;
             flex-direction: column;
-            gap: 10px;
+            gap: 0;
             overflow-y: auto;
-            padding-right: 4px;
+            padding: 10px 18px 16px;
+            background: rgba(0, 0, 0, 0.18);
         }
 
         .guestbook-empty {
@@ -905,58 +1008,72 @@
             line-height: 1.45;
             padding: 12px;
             border: 1px dashed rgba(255, 255, 255, 0.18);
-            border-radius: 12px;
+            border-radius: 2px;
         }
 
         .guestbook-message {
             display: grid;
-            grid-template-columns: 40px 1fr;
+            grid-template-columns: 42px 1fr;
             gap: 10px;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.07);
+            padding: 8px 0 12px;
+            border: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .guestbook-avatar-link,
+        .guestbook-username-link {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .guestbook-avatar-link:hover .guestbook-avatar,
+        .guestbook-username-link:hover {
+            filter: brightness(1.16);
+            text-decoration: underline;
         }
 
         .guestbook-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: linear-gradient(135deg, var(--primary-color, #00CED1), var(--secondary-color, #2563EB));
-            border: 1px solid rgba(255, 255, 255, 0.28);
+            width: 36px;
+            height: 36px;
+            border-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
         }
 
         .guestbook-message-main {
             min-width: 0;
+            padding-top: 1px;
         }
 
         .guestbook-message-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            align-items: baseline;
-            margin-bottom: 5px;
+            display: block;
+            margin-bottom: 3px;
         }
 
         .guestbook-username {
-            color: #fff;
+            display: inline-block;
+            max-width: 100%;
+            color: #d6d7d9;
             font-size: 12px;
+            line-height: 1.25;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .guestbook-time {
-            color: rgba(255, 255, 255, 0.45);
-            flex: 0 0 auto;
-            font-size: 9px;
+            display: block;
+            color: rgba(255, 255, 255, 0.48);
+            font-size: 10px;
+            line-height: 1.35;
+            margin-top: 1px;
         }
 
         .guestbook-text {
-            color: rgba(255, 255, 255, 0.82);
+            color: rgba(255, 255, 255, 0.88);
             font-size: 11px;
-            line-height: 1.45;
+            line-height: 1.42;
             overflow-wrap: anywhere;
             white-space: pre-wrap;
         }
@@ -977,7 +1094,7 @@
             transform: none;
             border-radius: 15px;
             border-left-color: rgba(255, 255, 255, 0.16);
-            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 35%, transparent);
+            box-shadow: 0 0 28px rgba(0, 0, 0, 0.35), 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 25%, transparent);
         }
 
         #skills-block {
@@ -1361,7 +1478,7 @@
                 max-height: min(34vh, 250px);
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto minmax(0, 1fr);
-                padding: 12px;
+                padding: 0;
                 border-radius: 15px;
                 transform: none;
                 transform-origin: top center;
@@ -1375,6 +1492,13 @@
 
             .guestbook-messages {
                 grid-row: 3;
+            }
+
+            .more-messages-view .guestbook-panel {
+                position: static;
+                height: min(430px, 58vh);
+                max-height: none;
+                transform: none;
             }
         }
 
@@ -1391,7 +1515,7 @@
                 max-height: min(34vh, 250px);
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto minmax(0, 1fr);
-                padding: 12px;
+                padding: 0;
                 border-radius: 15px;
                 transform: none;
                 transform-origin: top center;
@@ -1792,15 +1916,32 @@
                 <button id="more-messages-back" class="subview-back" type="button">Back</button>
                 <aside id="guestbook-panel" class="guestbook-panel" aria-labelledby="guestbook-title">
                     <div class="guestbook-head">
-                        <h2 id="guestbook-title" class="guestbook-title">messages.</h2>
-                        <p class="guestbook-subtitle">leave a profile comment. no account needed.</p>
+                        <h2 id="guestbook-title" class="guestbook-title">comments</h2>
+                        <div class="comment-profile-controls">
+                            <button id="comment-profile-toggle" class="comment-profile-toggle" type="button" aria-expanded="false" aria-controls="comment-profile-menu" aria-label="Edit comment profile">
+                                <img id="comment-profile-avatar" src="assets/profile.gif" alt="Your comment profile picture">
+                            </button>
+                            <div id="comment-profile-menu" class="comment-profile-menu hidden" role="dialog" aria-labelledby="comment-profile-title">
+                                <h3 id="comment-profile-title">comment profile</h3>
+                                <label for="comment-profile-username">username</label>
+                                <input id="comment-profile-username" type="text" maxlength="24" autocomplete="nickname" placeholder="username">
+                                <label for="comment-profile-link">profile link</label>
+                                <input id="comment-profile-link" type="url" autocomplete="url" placeholder="https://steamcommunity.com/id/...">
+                                <label for="comment-profile-avatar-url">pfp image url</label>
+                                <input id="comment-profile-avatar-url" type="url" autocomplete="url" placeholder="optional image url">
+                                <button id="comment-profile-save" class="comment-profile-save" type="button">Save</button>
+                            </div>
+                        </div>
                     </div>
                     <form id="guestbook-form" class="guestbook-form">
-                        <input id="guestbook-username" type="text" name="username" placeholder="username" maxlength="24" autocomplete="nickname" required>
-                        <input id="guestbook-avatar-url" type="url" name="avatar" placeholder="pfp image url (optional)" autocomplete="url">
-                        <textarea id="guestbook-message" name="message" placeholder="type your message..." maxlength="280" required></textarea>
-                        <button id="guestbook-submit" class="guestbook-submit" type="submit">Send</button>
-                        <div id="guestbook-status" class="guestbook-status" role="status" aria-live="polite"></div>
+                        <img id="guestbook-compose-avatar" class="guestbook-compose-avatar" src="assets/profile.gif" alt="Your comment profile picture">
+                        <div class="guestbook-compose-main">
+                            <textarea id="guestbook-message" name="message" placeholder="Add a comment" maxlength="280" required></textarea>
+                            <div class="guestbook-compose-actions">
+                                <div id="guestbook-status" class="guestbook-status" role="status" aria-live="polite"></div>
+                                <button id="guestbook-submit" class="guestbook-submit" type="submit">Post</button>
+                            </div>
+                        </div>
                     </form>
                     <div id="guestbook-messages" class="guestbook-messages" aria-live="polite">
                         <div class="guestbook-empty">loading messages...</div>
@@ -2016,17 +2157,31 @@
 
         const panel = document.getElementById("guestbook-panel");
         const form = document.getElementById("guestbook-form");
-        const usernameInput = document.getElementById("guestbook-username");
-        const avatarInput = document.getElementById("guestbook-avatar-url");
         const messageInput = document.getElementById("guestbook-message");
         const submitButton = document.getElementById("guestbook-submit");
         const statusNode = document.getElementById("guestbook-status");
         const messagesNode = document.getElementById("guestbook-messages");
+        const profileToggle = document.getElementById("comment-profile-toggle");
+        const profileMenu = document.getElementById("comment-profile-menu");
+        const profileAvatar = document.getElementById("comment-profile-avatar");
+        const composeAvatar = document.getElementById("guestbook-compose-avatar");
+        const profileUsernameInput = document.getElementById("comment-profile-username");
+        const profileLinkInput = document.getElementById("comment-profile-link");
+        const profileAvatarInput = document.getElementById("comment-profile-avatar-url");
+        const profileSaveButton = document.getElementById("comment-profile-save");
 
         const fallbackAvatar = "assets/profile.gif";
+        const commentProfileStorageKey = "wolf-comment-profile";
+        const defaultCommentProfile = {
+            username: "guest",
+            profileLink: "",
+            avatarUrl: fallbackAvatar
+        };
         const dateFormatter = new Intl.DateTimeFormat(undefined, {
             month: "short",
-            day: "numeric",
+            day: "numeric"
+        });
+        const timeFormatter = new Intl.DateTimeFormat(undefined, {
             hour: "numeric",
             minute: "2-digit"
         });
@@ -2042,14 +2197,82 @@
 
             try {
                 const parsed = new URL(value);
+                return value === fallbackAvatar || ["http:", "https:"].includes(parsed.protocol);
+            } catch (error) {
+                return value === fallbackAvatar;
+            }
+        }
+
+        function isHttpUrl(value) {
+            if (!value) {
+                return true;
+            }
+
+            try {
+                const parsed = new URL(value);
                 return ["http:", "https:"].includes(parsed.protocol);
             } catch (error) {
                 return false;
             }
         }
 
+        function loadCommentProfile() {
+            try {
+                const savedProfile = JSON.parse(localStorage.getItem(commentProfileStorageKey));
+                return {
+                    ...defaultCommentProfile,
+                    ...(savedProfile && typeof savedProfile === "object" ? savedProfile : {})
+                };
+            } catch (error) {
+                return { ...defaultCommentProfile };
+            }
+        }
+
+        let commentProfile = loadCommentProfile();
+
+        function getProfileAvatarUrl() {
+            return commentProfile.avatarUrl || fallbackAvatar;
+        }
+
+        function applyCommentProfile() {
+            const avatarUrl = getProfileAvatarUrl();
+            profileUsernameInput.value = commentProfile.username === defaultCommentProfile.username ? "" : commentProfile.username;
+            profileLinkInput.value = commentProfile.profileLink || "";
+            profileAvatarInput.value = commentProfile.avatarUrl === fallbackAvatar ? "" : commentProfile.avatarUrl;
+            profileAvatar.src = avatarUrl;
+            composeAvatar.src = avatarUrl;
+            profileAvatar.alt = `${commentProfile.username || "guest"}'s comment profile picture`;
+            composeAvatar.alt = profileAvatar.alt;
+        }
+
+        function saveCommentProfile() {
+            const username = cleanText(profileUsernameInput.value, 24) || defaultCommentProfile.username;
+            const profileLink = profileLinkInput.value.trim();
+            const avatarUrl = profileAvatarInput.value.trim() || fallbackAvatar;
+
+            if (!isHttpUrl(profileLink)) {
+                setStatus("profile link must start with http or https.");
+                return false;
+            }
+
+            if (!isHttpImageUrl(avatarUrl)) {
+                setStatus("pfp must be an http or https image url.");
+                return false;
+            }
+
+            commentProfile = { username, profileLink, avatarUrl };
+            localStorage.setItem(commentProfileStorageKey, JSON.stringify(commentProfile));
+            applyCommentProfile();
+            setStatus("profile saved locally.");
+            return true;
+        }
+
         function setStatus(message) {
             statusNode.textContent = message;
+        }
+
+        function formatCommentDate(timestamp) {
+            return `${dateFormatter.format(timestamp)} @ ${timeFormatter.format(timestamp).toLowerCase().replace(/\s/g, "")}`;
         }
 
         function renderMessages(snapshot) {
@@ -2084,6 +2307,18 @@
                     avatar.src = fallbackAvatar;
                 }, { once: true });
 
+                const profileLink = typeof message.profileLink === "string" ? message.profileLink : "";
+                let avatarNode = avatar;
+                if (isHttpUrl(profileLink) && profileLink) {
+                    const avatarLink = document.createElement("a");
+                    avatarLink.className = "guestbook-avatar-link";
+                    avatarLink.href = profileLink;
+                    avatarLink.target = "_blank";
+                    avatarLink.rel = "noopener noreferrer";
+                    avatarLink.append(avatar);
+                    avatarNode = avatarLink;
+                }
+
                 const main = document.createElement("div");
                 main.className = "guestbook-message-main";
 
@@ -2094,11 +2329,22 @@
                 username.className = "guestbook-username";
                 username.textContent = message.username || "guest";
 
+                let usernameNode = username;
+                if (isHttpUrl(profileLink) && profileLink) {
+                    const usernameLink = document.createElement("a");
+                    usernameLink.className = "guestbook-username-link";
+                    usernameLink.href = profileLink;
+                    usernameLink.target = "_blank";
+                    usernameLink.rel = "noopener noreferrer";
+                    usernameLink.append(username);
+                    usernameNode = usernameLink;
+                }
+
                 const time = document.createElement("time");
                 time.className = "guestbook-time";
                 if (typeof message.createdAt === "number") {
                     time.dateTime = new Date(message.createdAt).toISOString();
-                    time.textContent = dateFormatter.format(message.createdAt);
+                    time.textContent = formatCommentDate(message.createdAt);
                 } else {
                     time.textContent = "just now";
                 }
@@ -2107,9 +2353,9 @@
                 text.className = "guestbook-text";
                 text.textContent = message.text || "";
 
-                head.append(username, time);
+                head.append(usernameNode, time);
                 main.append(head, text);
-                article.append(avatar, main);
+                article.append(avatarNode, main);
                 fragment.append(article);
             });
 
@@ -2123,17 +2369,17 @@
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
-            const username = cleanText(usernameInput.value, 24);
-            const avatarUrl = avatarInput.value.trim();
-            const text = cleanText(messageInput.value, 280);
-
-            if (!username || !text) {
-                setStatus("username and message are required.");
+            if (!saveCommentProfile()) {
                 return;
             }
 
-            if (!isHttpImageUrl(avatarUrl)) {
-                setStatus("pfp must be an http or https image url.");
+            const username = commentProfile.username || defaultCommentProfile.username;
+            const avatarUrl = getProfileAvatarUrl();
+            const profileLink = commentProfile.profileLink || "";
+            const text = cleanText(messageInput.value, 280);
+
+            if (!text) {
+                setStatus("comment is required.");
                 return;
             }
 
@@ -2143,16 +2389,50 @@
                 await push(messagesRef, {
                     username,
                     avatarUrl,
+                    profileLink,
                     text,
                     createdAt: serverTimestamp()
                 });
-                form.reset();
-                setStatus("sent forever.");
+                messageInput.value = "";
+                setStatus("comment posted.");
             } catch (error) {
                 setStatus(error.message || "message could not send right now.");
             } finally {
                 submitButton.disabled = false;
             }
+        });
+
+        applyCommentProfile();
+
+        profileToggle.addEventListener("click", () => {
+            const isOpen = profileMenu.classList.toggle("hidden");
+            profileToggle.setAttribute("aria-expanded", String(!isOpen));
+        });
+
+        profileSaveButton.addEventListener("click", () => {
+            if (saveCommentProfile()) {
+                profileMenu.classList.add("hidden");
+                profileToggle.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (profileMenu.classList.contains("hidden")) {
+                return;
+            }
+
+            if (!profileMenu.contains(event.target) && !profileToggle.contains(event.target)) {
+                profileMenu.classList.add("hidden");
+                profileToggle.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        profileAvatar.addEventListener("error", () => {
+            profileAvatar.src = fallbackAvatar;
+        });
+
+        composeAvatar.addEventListener("error", () => {
+            composeAvatar.src = fallbackAvatar;
         });
 
         panel.classList.add("guestbook-ready");
