@@ -342,49 +342,38 @@
         }
 
         .badge-box {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
             padding: 2px;
             border-radius: 15px;
             display: inline-block;
+            border: 1px solid color-mix(in srgb, var(--primary-color, #00CED1) 35%, transparent);
         }
 
         .badge-box-inner {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.16);
             padding: 5px;
             border-radius: 12px;
             display: flex;
             gap: 8px;
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 10px color-mix(in srgb, var(--primary-color, #00CED1) 18%, transparent);
         }
 
         .badge {
             width: 22px;
             height: 22px;
-            transition: transform 0.3s;
+            display: block;
+            transition: transform 0.3s, filter 0.3s, background-color 0.3s;
             pointer-events: auto;
             opacity: 1 !important;
+            background: var(--primary-color, #00CED1);
+            -webkit-mask: var(--badge-icon) center / contain no-repeat;
+            mask: var(--badge-icon) center / contain no-repeat;
+            filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary-color, #00CED1) 70%, transparent));
         }
 
-        .badge-label {
-            width: auto;
-            height: auto;
-            font-size: 12px;
-            padding: 4px 8px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            text-transform: lowercase;
-        }
-
-        .badge-label {
-            width: auto;
-            height: auto;
-            font-size: 12px;
-            padding: 4px 8px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            text-transform: lowercase;
+        body[data-preset="black"] .badge {
+            background: #E5E7EB;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.45));
         }
 
         .badge:hover {
@@ -638,64 +627,82 @@
             opacity: 1;
         }
 
-        .discord-presence {
+        .presence-stack {
             position: absolute;
             right: 20px;
             bottom: 20px;
             z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: min(310px, 100%);
+            align-self: flex-end;
+            pointer-events: auto;
+        }
+
+        .presence-card {
             display: grid;
             grid-template-columns: 58px minmax(0, 1fr);
             gap: 10px;
             align-items: center;
-            align-self: flex-end;
-            width: min(310px, 100%);
-            margin-top: -6px;
-            margin-bottom: 4px;
+            width: 100%;
             padding: 8px 10px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.28));
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.22), 0 0 16px color-mix(in srgb, var(--primary-color, #00CED1) 28%, transparent);
+            border: 1px solid color-mix(in srgb, var(--primary-color, #00CED1) 30%, transparent);
+            background: transparent;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.12), 0 0 16px color-mix(in srgb, var(--primary-color, #00CED1) 20%, transparent);
+            backdrop-filter: blur(2px);
             overflow: hidden;
         }
 
-        .discord-avatar {
+        .spotify-presence.hidden {
+            display: none;
+        }
+
+        .discord-avatar,
+        .spotify-avatar {
             width: 58px;
             height: 58px;
             border-radius: 10px;
             object-fit: cover;
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid color-mix(in srgb, var(--primary-color, #00CED1) 30%, rgba(255, 255, 255, 0.18));
         }
 
-        .discord-copy {
+        .discord-copy,
+        .spotify-copy {
             min-width: 0;
             display: flex;
             flex-direction: column;
             gap: 3px;
         }
 
-        .discord-label {
-            color: rgba(255, 255, 255, 0.55);
+        .discord-label,
+        .spotify-label {
+            color: color-mix(in srgb, var(--primary-color, #00CED1) 72%, rgba(255, 255, 255, 0.55));
             font-size: 9px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
         .discord-name,
-        .discord-status {
+        .discord-status,
+        .spotify-song,
+        .spotify-artist {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .discord-name {
+        .discord-name,
+        .spotify-song {
             color: #fff;
             font-size: 12px;
             line-height: 1.2;
         }
 
-        .discord-status {
+        .discord-status,
+        .spotify-artist {
             color: rgba(255, 255, 255, 0.72);
             font-size: 11px;
         }
@@ -1485,15 +1492,18 @@
                 height: 34px;
             }
 
-            .discord-presence {
+            .presence-stack {
                 position: static;
-                grid-template-columns: 48px minmax(0, 1fr);
-                align-self: stretch;
                 width: 100%;
                 margin: 0 0 8px;
             }
 
-            .discord-avatar {
+            .presence-card {
+                grid-template-columns: 48px minmax(0, 1fr);
+            }
+
+            .discord-avatar,
+            .spotify-avatar {
                 width: 48px;
                 height: 48px;
             }
@@ -1670,19 +1680,23 @@
                             <div class="badge-box-inner">
                                 <div class="badge-group">
                                     <div class="badge-container">
-                                        <span class="badge badge-label">owner.</span>
+                                        <span class="badge" style="--badge-icon: url('assets/owner.png');" aria-label="owner badge"></span>
                                         <span class="tooltip">owner.</span>
                                     </div>
                                     <div class="badge-container">
-                                        <span class="badge badge-label">developer.</span>
+                                        <span class="badge" style="--badge-icon: url('assets/og.png');" aria-label="og badge"></span>
+                                        <span class="tooltip">og.</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <span class="badge" style="--badge-icon: url('assets/developer.png');" aria-label="developer badge"></span>
                                         <span class="tooltip">developer.</span>
                                     </div>
                                     <div class="badge-container">
-                                        <span class="badge badge-label">staff.</span>
+                                        <span class="badge" style="--badge-icon: url('assets/staff.png');" aria-label="staff badge"></span>
                                         <span class="tooltip">staff.</span>
                                     </div>
                                     <div class="badge-container">
-                                        <span class="badge badge-label">wolf.</span>
+                                        <span class="badge" style="--badge-icon: url('assets/wolf.png');" aria-label="wolf badge"></span>
                                         <span class="tooltip">wolf.</span>
                                     </div>
                                 </div>
@@ -1697,14 +1711,24 @@
             <div class="bio-separator"></div>
 
             <div class="profile-footer">
-                <section id="discord-presence" class="discord-presence" aria-label="Discord profile status">
-                    <img id="discord-avatar" class="discord-avatar" src="assets/profile.gif" alt="Discord avatar">
-                    <div class="discord-copy">
-                        <span id="discord-label" class="discord-label">discord profile</span>
-                        <strong id="discord-name" class="discord-name">loading profile...</strong>
-                        <span id="discord-status" class="discord-status">checking status</span>
-                    </div>
-                </section>
+                <div class="presence-stack" aria-label="Profile rich presence">
+                    <section id="spotify-presence" class="spotify-presence presence-card hidden" aria-label="Spotify listening status">
+                        <img id="spotify-avatar" class="spotify-avatar" src="assets/profile.gif" alt="Spotify album art">
+                        <div class="spotify-copy">
+                            <span id="spotify-label" class="spotify-label">spotify</span>
+                            <strong id="spotify-song" class="spotify-song">not listening</strong>
+                            <span id="spotify-artist" class="spotify-artist">waiting for profile</span>
+                        </div>
+                    </section>
+                    <section id="discord-presence" class="discord-presence presence-card" aria-label="Discord profile status">
+                        <img id="discord-avatar" class="discord-avatar" src="assets/profile.gif" alt="Discord avatar">
+                        <div class="discord-copy">
+                            <span id="discord-label" class="discord-label">discord profile</span>
+                            <strong id="discord-name" class="discord-name">loading profile...</strong>
+                            <span id="discord-status" class="discord-status">checking status</span>
+                        </div>
+                    </section>
+                </div>
 
                 <div class="social-links">
                     <a href="https://www.roblox.com/users/1431265/profile" target="_blank" class="social-link-btn" aria-label="Roblox profile">
