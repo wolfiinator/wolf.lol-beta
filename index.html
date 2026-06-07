@@ -1036,18 +1036,6 @@
             padding-left: 0;
         }
 
-        .guestbook-avatar-link,
-        .guestbook-username-link {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .guestbook-avatar-link:hover .guestbook-avatar,
-        .guestbook-username-link:hover {
-            filter: brightness(1.16);
-            text-decoration: underline;
-        }
-
         .guestbook-avatar {
             width: 36px;
             height: 36px;
@@ -1959,8 +1947,6 @@
                                 <h3 id="comment-profile-title">comment profile</h3>
                                 <label for="comment-profile-username">username</label>
                                 <input id="comment-profile-username" type="text" maxlength="24" autocomplete="nickname" placeholder="username">
-                                <label for="comment-profile-link">profile link</label>
-                                <input id="comment-profile-link" type="url" autocomplete="url" placeholder="https://steamcommunity.com/id/...">
                                 <label for="comment-profile-avatar-url">pfp image url</label>
                                 <input id="comment-profile-avatar-url" type="url" autocomplete="url" placeholder="optional image url">
                                 <button id="comment-profile-save" class="comment-profile-save" type="button">Save</button>
@@ -2204,7 +2190,6 @@
         const profileAvatar = document.getElementById("comment-profile-avatar");
         const composeAvatar = document.getElementById("guestbook-compose-avatar");
         const profileUsernameInput = document.getElementById("comment-profile-username");
-        const profileLinkInput = document.getElementById("comment-profile-link");
         const profileAvatarInput = document.getElementById("comment-profile-avatar-url");
         const profileSaveButton = document.getElementById("comment-profile-save");
 
@@ -2212,7 +2197,6 @@
         const commentProfileStorageKey = "wolf-comment-profile";
         const defaultCommentProfile = {
             username: "guest",
-            profileLink: "",
             avatarUrl: ""
         };
         const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -2238,19 +2222,6 @@
                 return value === fallbackAvatar || ["http:", "https:"].includes(parsed.protocol);
             } catch (error) {
                 return value === fallbackAvatar;
-            }
-        }
-
-        function isHttpUrl(value) {
-            if (!value) {
-                return true;
-            }
-
-            try {
-                const parsed = new URL(value);
-                return ["http:", "https:"].includes(parsed.protocol);
-            } catch (error) {
-                return false;
             }
         }
 
@@ -2280,7 +2251,6 @@
             const avatarUrl = getProfileAvatarUrl();
             const hasAvatar = hasCustomAvatarUrl(avatarUrl);
             profileUsernameInput.value = commentProfile.username === defaultCommentProfile.username ? "" : commentProfile.username;
-            profileLinkInput.value = commentProfile.profileLink || "";
             profileAvatarInput.value = hasAvatar ? avatarUrl : "";
             profileAvatar.src = hasAvatar ? avatarUrl : fallbackAvatar;
             composeAvatar.src = hasAvatar ? avatarUrl : fallbackAvatar;
@@ -2291,20 +2261,14 @@
 
         function saveCommentProfile() {
             const username = cleanText(profileUsernameInput.value, 24) || defaultCommentProfile.username;
-            const profileLink = profileLinkInput.value.trim();
             const avatarUrl = profileAvatarInput.value.trim();
-
-            if (!isHttpUrl(profileLink)) {
-                setStatus("profile link must start with http or https.");
-                return false;
-            }
 
             if (!isHttpImageUrl(avatarUrl)) {
                 setStatus("pfp must be an http or https image url.");
                 return false;
             }
 
-            commentProfile = { username, profileLink, avatarUrl };
+            commentProfile = { username, avatarUrl };
             localStorage.setItem(commentProfileStorageKey, JSON.stringify(commentProfile));
             applyCommentProfile();
             setStatus("profile saved locally.");
@@ -2343,7 +2307,6 @@
 
                 const messageAvatarUrl = typeof message.avatarUrl === "string" ? message.avatarUrl : "";
                 const hasMessageAvatar = hasCustomAvatarUrl(messageAvatarUrl);
-                const profileLink = typeof message.profileLink === "string" ? message.profileLink : "";
                 let avatarNode = null;
 
                 if (hasMessageAvatar) {
@@ -2359,15 +2322,6 @@
                     }, { once: true });
 
                     avatarNode = avatar;
-                    if (isHttpUrl(profileLink) && profileLink) {
-                        const avatarLink = document.createElement("a");
-                        avatarLink.className = "guestbook-avatar-link";
-                        avatarLink.href = profileLink;
-                        avatarLink.target = "_blank";
-                        avatarLink.rel = "noopener noreferrer";
-                        avatarLink.append(avatar);
-                        avatarNode = avatarLink;
-                    }
                 } else {
                     article.classList.add("guestbook-message--compact");
                 }
@@ -2382,17 +2336,6 @@
                 username.className = "guestbook-username";
                 username.textContent = message.username || "guest";
 
-                let usernameNode = username;
-                if (isHttpUrl(profileLink) && profileLink) {
-                    const usernameLink = document.createElement("a");
-                    usernameLink.className = "guestbook-username-link";
-                    usernameLink.href = profileLink;
-                    usernameLink.target = "_blank";
-                    usernameLink.rel = "noopener noreferrer";
-                    usernameLink.append(username);
-                    usernameNode = usernameLink;
-                }
-
                 const time = document.createElement("time");
                 time.className = "guestbook-time";
                 if (typeof message.createdAt === "number") {
@@ -2406,7 +2349,7 @@
                 text.className = "guestbook-text";
                 text.textContent = message.text || "";
 
-                head.append(usernameNode, time);
+                head.append(username, time);
                 main.append(head, text);
                 if (avatarNode) {
                     article.append(avatarNode, main);
@@ -2432,7 +2375,6 @@
 
             const username = commentProfile.username || defaultCommentProfile.username;
             const avatarUrl = getProfileAvatarUrl();
-            const profileLink = commentProfile.profileLink || "";
             const text = cleanText(messageInput.value, 280);
 
             if (!text) {
@@ -2446,7 +2388,6 @@
                 await push(messagesRef, {
                     username,
                     avatarUrl,
-                    profileLink,
                     text,
                     createdAt: serverTimestamp()
                 });
