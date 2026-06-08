@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreHomeView = document.getElementById('more-home-view');
   const morePresetsView = document.getElementById('more-presets-view');
   const moreMusicView = document.getElementById('more-music-view');
-  const moreGamesView = document.getElementById('more-games-view');
   const moreMoviesView = document.getElementById('more-movies-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
@@ -55,14 +54,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const musicArtistHeading = document.getElementById('music-artist-heading');
   const musicArtistBackButton = document.getElementById('music-artist-back');
   const openMoreMusicButton = document.getElementById('open-more-music');
-  const openMoreGamesButton = document.getElementById('open-more-games');
   const openMoreMoviesButton = document.getElementById('open-more-movies');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const openMorePresetsButton = document.getElementById('open-more-presets');
   const openMoreMessagesButton = document.getElementById('open-more-messages');
   const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
-  const moreGamesBackButton = document.getElementById('more-games-back');
   const moreMoviesBackButton = document.getElementById('more-movies-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
@@ -94,7 +91,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestTabs = document.querySelectorAll('.interest-tab');
   const interestCharacterTabs = document.querySelectorAll('.interest-character-tab');
   const interestGameTabs = document.querySelectorAll('.interest-game-tab');
-  const gameTabs = document.querySelectorAll('.game-tab');
   const presetButtons = document.querySelectorAll('.preset-card');
   const interestsNextPageButton = document.getElementById('interests-next-page');
   const characterInterestsNextPageButton = document.getElementById('character-interests-next-page');
@@ -107,23 +103,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestGameImage = document.getElementById('interest-game-image');
   const interestGameName = document.getElementById('interest-game-name');
   const interestGameDescription = document.getElementById('interest-game-description');
-  const gameImage = document.getElementById('game-image');
-  const gameName = document.getElementById('game-name');
-  const gameDescription = document.getElementById('game-description');
-  const gamePlayButton = document.getElementById('game-play');
-  const movieUrlInput = document.getElementById('movie-url-input');
-  const movieLoadButton = document.getElementById('movie-load');
   const movieStatus = document.getElementById('movie-status');
-  const movieVrLink = document.getElementById('movie-vr-link');
-  const movieCopyVrButton = document.getElementById('movie-copy-vr');
   const movieOpenVrButton = document.getElementById('movie-open-vr');
+  const movieReloadVrButton = document.getElementById('movie-reload-vr');
   const movieFrame = document.getElementById('movie-frame');
-  const gameModal = document.getElementById('game-modal');
-  const gameModalPanel = document.getElementById('game-modal-panel');
-  const gameModalTitle = document.getElementById('game-modal-title');
-  const gameFrame = document.getElementById('game-frame');
-  const gameFullscreenButton = document.getElementById('game-fullscreen');
-  const gameCloseButton = document.getElementById('game-close');
   const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
   const discordAvatar = document.getElementById('discord-avatar');
   const discordLabel = document.getElementById('discord-label');
@@ -282,16 +265,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       image: 'assets/chilloutvr.png',
       alt: 'ChilloutVR artwork',
       description: 'ChilloutVR is a social sandbox game enabling players and content creators to create, share and explore content in a massive multiplayer metaverse alone, with friends or anyone around the world. Meet new people and explore virtual worlds together.'
-    }
-  };
-
-  const gamesContent = {
-    bitlife: {
-      name: 'BitLife',
-      image: 'games/bitlife/logo.png',
-      alt: 'BitLife logo',
-      description: 'Live a whole simulated life one choice at a time, from childhood decisions to careers, relationships, fame, trouble, and everything in between.',
-      url: 'games/bitlife/index.html'
     }
   };
 
@@ -1267,8 +1240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setInterval(updateDiscordPresence, 30000);
 
  
-  const defaultMovieVrUrl = 'https://vr-m.net/';
-  let activeMovieVrUrl = defaultMovieVrUrl;
+  const movieEmbedUrl = 'https://vr-m.net/';
 
   function setMovieStatus(message, isError = false) {
     if (!movieStatus) return;
@@ -1276,63 +1248,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     movieStatus.style.color = isError ? '#ffb4b4' : 'rgba(255, 255, 255, 0.78)';
   }
 
-  function normalizeNepuUrl(rawUrl) {
-    const trimmedUrl = (rawUrl || '').trim();
-    if (!trimmedUrl) throw new Error('Paste a nepu.to link first.');
-
-    const candidate = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
-    const url = new URL(candidate);
-    const host = url.hostname.replace(/^www\./i, '').toLowerCase();
-    if (host !== 'nepu.to') throw new Error('Only nepu.to links are supported here.');
-    url.protocol = 'https:';
-    url.hostname = 'nepu.to';
-    return url;
-  }
-
-  function buildNepuEmbedUrl(nepuUrl) {
-    const embedUrl = new URL(nepuUrl.href);
-    const pathParts = embedUrl.pathname.split('/').filter(Boolean);
-
-    if (pathParts[0] === 'embed') return embedUrl.href;
-    if (['e', 'v', 'watch'].includes(pathParts[0]) && pathParts[1]) {
-      embedUrl.pathname = `/embed/${pathParts[1]}`;
-    }
-
-    return embedUrl.href;
-  }
-
-  function buildVrMovieUrl(nepuUrl) {
-    const vrUrl = new URL(defaultMovieVrUrl);
-    vrUrl.searchParams.set('url', nepuUrl.href);
-    return vrUrl.href;
-  }
-
-  function updateMovieEmbed(rawUrl) {
-    try {
-      const nepuUrl = normalizeNepuUrl(rawUrl);
-      const embedUrl = buildNepuEmbedUrl(nepuUrl);
-      activeMovieVrUrl = buildVrMovieUrl(nepuUrl);
-
-      if (movieFrame) movieFrame.src = embedUrl;
-      if (movieVrLink) movieVrLink.textContent = activeMovieVrUrl;
-      setMovieStatus('Movie embed and VRChat link are ready.');
-    } catch (error) {
-      setMovieStatus(error.message || 'Could not build that movie link.', true);
-    }
-  }
-
-  async function copyMovieVrLink() {
-    if (!activeMovieVrUrl || activeMovieVrUrl === defaultMovieVrUrl) {
-      setMovieStatus('Load a Nepu link before copying the VRChat URL.', true);
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(activeMovieVrUrl);
-      setMovieStatus('Copied the VRChat link.');
-    } catch (error) {
-      setMovieStatus('Copy failed. Select and copy the VRChat URL manually.', true);
-    }
+  function reloadMovieEmbed() {
+    if (!movieFrame) return;
+    movieFrame.src = movieEmbedUrl;
+    setMovieStatus('Reloaded the embedded vr-m.net page.');
   }
 
   let activeMoreSubview = moreHomeView;
@@ -1375,7 +1294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, morePresetsView, moreMusicView, moreGamesView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, morePresetsView, moreMusicView, moreMoviesView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
@@ -1429,13 +1348,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  if (openMoreGamesButton) {
-    openMoreGamesButton.addEventListener('click', () => {
-      showMoreSubview(moreGamesView);
-      updateGameTab('bitlife');
-    });
-  }
-
   if (openMoreMoviesButton) {
     openMoreMoviesButton.addEventListener('click', () => showMoreSubview(moreMoviesView));
   }
@@ -1473,10 +1385,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  if (moreGamesBackButton) {
-    moreGamesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
-  }
-
   if (moreMoviesBackButton) {
     moreMoviesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
   }
@@ -1495,72 +1403,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (moreInterestsGamesBackButton) {
     moreInterestsGamesBackButton.addEventListener('click', () => showMoreSubview(moreInterestsCharactersView));
-  }
-
-  let activeGameKey = 'bitlife';
-
-  function updateGameTab(gameKey) {
-    const game = gamesContent[gameKey];
-    if (!game || !gameImage || !gameName || !gameDescription) return;
-    activeGameKey = gameKey;
-
-    const applyGame = () => {
-      gameImage.src = game.image;
-      gameImage.alt = game.alt;
-      gameName.textContent = game.name;
-      gameDescription.textContent = game.description;
-      const gameItem = gameImage.closest('.interest-item');
-      if (gameItem) {
-        gsap.fromTo(gameItem, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' });
-      }
-    };
-
-    const gameItem = gameImage.closest('.interest-item');
-    if (gameItem) {
-      gsap.to(gameItem, {
-        autoAlpha: 0,
-        y: -6,
-        duration: 0.15,
-        ease: 'power2.in',
-        onComplete: applyGame
-      });
-    } else {
-      applyGame();
-    }
-
-    gameTabs.forEach((tab) => {
-      const isActive = tab.dataset.game === gameKey;
-      tab.classList.toggle('active', isActive);
-      tab.setAttribute('aria-selected', String(isActive));
-    });
-  }
-
-  function openPlayableGame(gameKey = activeGameKey) {
-    const game = gamesContent[gameKey];
-    if (!game || !gameModal || !gameFrame) return;
-    activeGameKey = gameKey;
-    if (gameModalTitle) gameModalTitle.textContent = game.name;
-    gameFrame.src = game.url;
-    gameFrame.title = `${game.name} game`;
-    gameModal.classList.remove('hidden');
-  }
-
-  function closePlayableGame() {
-    if (!gameModal || !gameFrame) return;
-    if (document.fullscreenElement && document.exitFullscreen) {
-      document.exitFullscreen().catch(() => {});
-    }
-    gameModal.classList.add('hidden');
-    gameFrame.src = 'about:blank';
-  }
-
-  function fullscreenPlayableGame() {
-    if (!gameModalPanel) return;
-    if (gameModalPanel.requestFullscreen) {
-      gameModalPanel.requestFullscreen();
-    } else if (gameModalPanel.webkitRequestFullscreen) {
-      gameModalPanel.webkitRequestFullscreen();
-    }
   }
 
   function updateInterestTab(interestKey) {
@@ -1677,49 +1519,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  gameTabs.forEach((tab) => {
-    tab.addEventListener('click', () => updateGameTab(tab.dataset.game));
-    tab.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      updateGameTab(tab.dataset.game);
-    });
-  });
-
-  if (movieLoadButton) {
-    movieLoadButton.addEventListener('click', () => updateMovieEmbed(movieUrlInput?.value));
-  }
-
-  if (movieUrlInput) {
-    movieUrlInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') updateMovieEmbed(movieUrlInput.value);
-    });
-  }
-
-  if (movieCopyVrButton) {
-    movieCopyVrButton.addEventListener('click', copyMovieVrLink);
+  if (movieReloadVrButton) {
+    movieReloadVrButton.addEventListener('click', reloadMovieEmbed);
   }
 
   if (movieOpenVrButton) {
     movieOpenVrButton.addEventListener('click', () => {
-      window.open(activeMovieVrUrl, '_blank', 'noopener,noreferrer');
-    });
-  }
-
-  if (gamePlayButton) {
-    gamePlayButton.addEventListener('click', () => openPlayableGame(activeGameKey));
-  }
-
-  if (gameCloseButton) {
-    gameCloseButton.addEventListener('click', closePlayableGame);
-  }
-
-  if (gameFullscreenButton) {
-    gameFullscreenButton.addEventListener('click', fullscreenPlayableGame);
-  }
-
-  if (gameModal) {
-    gameModal.addEventListener('click', (event) => {
-      if (event.target === gameModal) closePlayableGame();
+      window.open(movieEmbedUrl, '_blank', 'noopener,noreferrer');
     });
   }
 
@@ -1762,7 +1568,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   updateInterestTab('beastars');
-  updateGameTab('bitlife');
   updateCharacterInterestTab('mr-wolf');
   updateGameInterestTab('vrchat');
   renderArtistList();
