@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00CED1">
+    <meta name="description" content="wolf's profile — music, games, movies, VRChat, and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="wolf.lol">
+    <meta property="og:title" content="wolf's profile.">
+    <meta property="og:description" content="music, games, movies, VRChat, and more.">
+    <meta property="og:image" content="https://wolf.lol/assets/og.png">
+    <meta property="og:image:alt" content="wolf.lol profile preview">
+    <meta property="og:url" content="https://wolf.lol/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="wolf's profile.">
+    <meta name="twitter:description" content="music, games, movies, VRChat, and more.">
+    <meta name="twitter:image" content="https://wolf.lol/assets/og.png">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <title>wolf's profile.</title>
     <style>
@@ -1368,6 +1381,121 @@
             border-color: color-mix(in srgb, var(--primary-color, #00CED1) 70%, rgba(255, 255, 255, 0.25));
         }
 
+
+
+        .movie-tool {
+            display: grid;
+            gap: 14px;
+        }
+
+        .movie-tool-card,
+        .movie-output-card {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+            padding: 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .movie-tool-card h3,
+        .movie-output-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .movie-tool-card p,
+        .movie-output-card p,
+        .movie-status {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .movie-input-row {
+            display: flex;
+            gap: 10px;
+            margin: 12px 0 8px;
+        }
+
+        .movie-input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.36);
+            color: #fff;
+            font-family: 'Minecraftia', monospace;
+            font-size: 12px;
+            padding: 10px 14px;
+            outline: none;
+        }
+
+        .movie-input:focus {
+            border-color: color-mix(in srgb, var(--primary-color, #00CED1) 75%, #fff);
+            box-shadow: 0 0 18px color-mix(in srgb, var(--primary-color, #00CED1) 28%, transparent);
+        }
+
+        .movie-actions,
+        .movie-link-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .movie-button,
+        .movie-secondary-button {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Minecraftia', monospace;
+            font-size: 12px;
+            padding: 9px 14px;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .movie-button {
+            background: color-mix(in srgb, var(--primary-color, #00CED1) 36%, rgba(255, 255, 255, 0.08));
+            border-color: color-mix(in srgb, var(--primary-color, #00CED1) 68%, rgba(255, 255, 255, 0.25));
+        }
+
+        .movie-button:hover,
+        .movie-secondary-button:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.85);
+            transform: translateY(-1px);
+        }
+
+        .movie-link-output {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 10px 0;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(0, 0, 0, 0.32);
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 12px;
+        }
+
+        .movie-frame-wrap {
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.42);
+            aspect-ratio: 16 / 9;
+        }
+
+        .movie-frame {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #050505;
+        }
+
         .game-modal {
             position: fixed;
             inset: 0;
@@ -1817,6 +1945,14 @@
                 width: 100%;
             }
 
+            .movie-input-row {
+                flex-direction: column;
+            }
+
+            .movie-frame-wrap {
+                min-height: 220px;
+            }
+
             .game-modal {
                 padding: 10px;
             }
@@ -2049,6 +2185,7 @@
                     <button id="open-more-music" class="more-option" type="button">Music Player</button>
                     <button id="open-more-interests" class="more-option" type="button">Interests</button>
                     <button id="open-more-games" class="more-option" type="button">Games</button>
+                    <button id="open-more-movies" class="more-option" type="button">Movies</button>
                     <button id="open-more-presets" class="more-option" type="button">Presets</button>
                     <button id="open-more-messages" class="more-option" type="button">Messages</button>
                 </div>
@@ -2064,7 +2201,7 @@
                         <div class="interests-next-wrap" aria-hidden="true"></div>
                     </div>
                     <div class="interest-item">
-                        <img id="game-image" src="assets/bitlife.svg" alt="BitLife artwork">
+                        <img id="game-image" src="games/bitlife/logo.png" alt="BitLife logo">
                         <div class="interest-copy">
                             <h3 id="game-name">BitLife</h3>
                             <p id="game-description">Live a whole simulated life one choice at a time, from childhood decisions to careers, relationships, fame, trouble, and everything in between.</p>
@@ -2072,6 +2209,34 @@
                                 <button id="game-play" class="game-play-button" type="button">Play</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="more-movies-view" class="more-view hidden">
+                <button id="more-movies-back" class="subview-back" type="button">Back</button>
+                <h2 class="skills-title">Movies</h2>
+                <div class="movie-tool">
+                    <div class="movie-tool-card">
+                        <h3>Nepu / VRChat link helper</h3>
+                        <p>Paste a Nepu link you are allowed to watch/share. The site will clean it into an embed preview and build a vr-m.net link for VRChat video-player worlds.</p>
+                        <div class="movie-input-row">
+                            <input id="movie-url-input" class="movie-input" type="url" inputmode="url" placeholder="https://nepu.to/..." aria-label="Nepu movie URL">
+                            <button id="movie-load" class="movie-button" type="button">Load</button>
+                        </div>
+                        <p id="movie-status" class="movie-status" aria-live="polite">Ready for a nepu.to link.</p>
+                    </div>
+                    <div class="movie-output-card">
+                        <h3>VRChat URL</h3>
+                        <p>Paste this into worlds that accept vr-m.net links. Some worlds may still require trusted URLs or desktop video support.</p>
+                        <code id="movie-vr-link" class="movie-link-output">https://vr-m.net/</code>
+                        <div class="movie-link-actions">
+                            <button id="movie-copy-vr" class="movie-secondary-button" type="button">Copy VRChat Link</button>
+                            <button id="movie-open-vr" class="movie-secondary-button" type="button">Open vr-m.net</button>
+                        </div>
+                    </div>
+                    <div class="movie-frame-wrap">
+                        <iframe id="movie-frame" class="movie-frame" title="Movie embed preview" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>
                     </div>
                 </div>
             </div>

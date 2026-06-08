@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const morePresetsView = document.getElementById('more-presets-view');
   const moreMusicView = document.getElementById('more-music-view');
   const moreGamesView = document.getElementById('more-games-view');
+  const moreMoviesView = document.getElementById('more-movies-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
   const moreInterestsGamesView = document.getElementById('more-interests-games-view');
@@ -55,12 +56,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const musicArtistBackButton = document.getElementById('music-artist-back');
   const openMoreMusicButton = document.getElementById('open-more-music');
   const openMoreGamesButton = document.getElementById('open-more-games');
+  const openMoreMoviesButton = document.getElementById('open-more-movies');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const openMorePresetsButton = document.getElementById('open-more-presets');
   const openMoreMessagesButton = document.getElementById('open-more-messages');
   const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
   const moreGamesBackButton = document.getElementById('more-games-back');
+  const moreMoviesBackButton = document.getElementById('more-movies-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
   const moreInterestsGamesBackButton = document.getElementById('more-interests-games-back');
@@ -108,6 +111,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const gameName = document.getElementById('game-name');
   const gameDescription = document.getElementById('game-description');
   const gamePlayButton = document.getElementById('game-play');
+  const movieUrlInput = document.getElementById('movie-url-input');
+  const movieLoadButton = document.getElementById('movie-load');
+  const movieStatus = document.getElementById('movie-status');
+  const movieVrLink = document.getElementById('movie-vr-link');
+  const movieCopyVrButton = document.getElementById('movie-copy-vr');
+  const movieOpenVrButton = document.getElementById('movie-open-vr');
+  const movieFrame = document.getElementById('movie-frame');
   const gameModal = document.getElementById('game-modal');
   const gameModalPanel = document.getElementById('game-modal-panel');
   const gameModalTitle = document.getElementById('game-modal-title');
@@ -278,8 +288,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const gamesContent = {
     bitlife: {
       name: 'BitLife',
-      image: 'assets/bitlife.svg',
-      alt: 'BitLife artwork',
+      image: 'games/bitlife/logo.png',
+      alt: 'BitLife logo',
       description: 'Live a whole simulated life one choice at a time, from childhood decisions to careers, relationships, fame, trouble, and everything in between.',
       url: 'games/bitlife/index.html'
     }
@@ -1257,6 +1267,74 @@ document.addEventListener('DOMContentLoaded', async () => {
   setInterval(updateDiscordPresence, 30000);
 
  
+  const defaultMovieVrUrl = 'https://vr-m.net/';
+  let activeMovieVrUrl = defaultMovieVrUrl;
+
+  function setMovieStatus(message, isError = false) {
+    if (!movieStatus) return;
+    movieStatus.textContent = message;
+    movieStatus.style.color = isError ? '#ffb4b4' : 'rgba(255, 255, 255, 0.78)';
+  }
+
+  function normalizeNepuUrl(rawUrl) {
+    const trimmedUrl = (rawUrl || '').trim();
+    if (!trimmedUrl) throw new Error('Paste a nepu.to link first.');
+
+    const candidate = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+    const url = new URL(candidate);
+    const host = url.hostname.replace(/^www\./i, '').toLowerCase();
+    if (host !== 'nepu.to') throw new Error('Only nepu.to links are supported here.');
+    url.protocol = 'https:';
+    url.hostname = 'nepu.to';
+    return url;
+  }
+
+  function buildNepuEmbedUrl(nepuUrl) {
+    const embedUrl = new URL(nepuUrl.href);
+    const pathParts = embedUrl.pathname.split('/').filter(Boolean);
+
+    if (pathParts[0] === 'embed') return embedUrl.href;
+    if (['e', 'v', 'watch'].includes(pathParts[0]) && pathParts[1]) {
+      embedUrl.pathname = `/embed/${pathParts[1]}`;
+    }
+
+    return embedUrl.href;
+  }
+
+  function buildVrMovieUrl(nepuUrl) {
+    const vrUrl = new URL(defaultMovieVrUrl);
+    vrUrl.searchParams.set('url', nepuUrl.href);
+    return vrUrl.href;
+  }
+
+  function updateMovieEmbed(rawUrl) {
+    try {
+      const nepuUrl = normalizeNepuUrl(rawUrl);
+      const embedUrl = buildNepuEmbedUrl(nepuUrl);
+      activeMovieVrUrl = buildVrMovieUrl(nepuUrl);
+
+      if (movieFrame) movieFrame.src = embedUrl;
+      if (movieVrLink) movieVrLink.textContent = activeMovieVrUrl;
+      setMovieStatus('Movie embed and VRChat link are ready.');
+    } catch (error) {
+      setMovieStatus(error.message || 'Could not build that movie link.', true);
+    }
+  }
+
+  async function copyMovieVrLink() {
+    if (!activeMovieVrUrl || activeMovieVrUrl === defaultMovieVrUrl) {
+      setMovieStatus('Load a Nepu link before copying the VRChat URL.', true);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(activeMovieVrUrl);
+      setMovieStatus('Copied the VRChat link.');
+    } catch (error) {
+      setMovieStatus('Copy failed. Select and copy the VRChat URL manually.', true);
+    }
+  }
+
   let activeMoreSubview = moreHomeView;
 
   function showMoreSubview(targetView) {
@@ -1358,6 +1436,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (openMoreMoviesButton) {
+    openMoreMoviesButton.addEventListener('click', () => showMoreSubview(moreMoviesView));
+  }
+
   if (openMoreInterestsButton) {
     openMoreInterestsButton.addEventListener('click', () => {
       showMoreSubview(moreInterestsView);
@@ -1393,6 +1475,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (moreGamesBackButton) {
     moreGamesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
+  }
+
+  if (moreMoviesBackButton) {
+    moreMoviesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
   }
 
   if (moreInterestsBackButton) {
@@ -1598,6 +1684,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       updateGameTab(tab.dataset.game);
     });
   });
+
+  if (movieLoadButton) {
+    movieLoadButton.addEventListener('click', () => updateMovieEmbed(movieUrlInput?.value));
+  }
+
+  if (movieUrlInput) {
+    movieUrlInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') updateMovieEmbed(movieUrlInput.value);
+    });
+  }
+
+  if (movieCopyVrButton) {
+    movieCopyVrButton.addEventListener('click', copyMovieVrLink);
+  }
+
+  if (movieOpenVrButton) {
+    movieOpenVrButton.addEventListener('click', () => {
+      window.open(activeMovieVrUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
 
   if (gamePlayButton) {
     gamePlayButton.addEventListener('click', () => openPlayableGame(activeGameKey));
