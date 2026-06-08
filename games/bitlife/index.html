@@ -4,9 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>BitLife - Life Simulator</title>
-
+  
   <script type="text/javascript" src="/cloak.js"></script>
   <meta name="robots" content="noindex,nofollow" />
   <!-- WEBGL GAME IN FULLSCREEN - COPY AND PASTE THIS CSS -->
@@ -303,40 +302,12 @@
     #links2 ul li a:hover {
       opacity: .85
     }
-
-    .game-message {
-      position: fixed;
-      inset: 0;
-      z-index: 2;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: #333;
-      color: #fff;
-      text-align: center;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .game-message.hidden {
-      display: none;
-    }
   </style>
 
   <script src="TemplateData/UnityProgress.js"></script>
   <script src="Build/UnityLoader.js"></script>
   <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      if (window.UnityLoader && window.UnityProgress) {
-        window.unityInstance = UnityLoader.instantiate("gameContainer", "Build/BitLife.json", {onProgress: UnityProgress});
-        return;
-      }
-
-      var message = document.getElementById('gameMessage');
-      if (message) {
-        message.classList.remove('hidden');
-      }
-    });
+    var unityInstance = UnityLoader.instantiate("gameContainer", "Build/BitLife.json", {onProgress: UnityProgress});
   </script>
 
 </head>
@@ -345,9 +316,6 @@
   <div class="webgl-content">
     <!-- WEBGL GAME IN FULLSCREEN - COPY AND PASTE THIS CSS - IMPORTANT: WIDTH: 100%; HEIGHT:100% -->
     <div id="gameContainer" style="width: 100%; height: 100%;"></div>
-  </div>
-  <div id="gameMessage" class="game-message hidden">
-    <p>BitLife is ready to embed here. Add the Unity <strong>Build</strong> and <strong>TemplateData</strong> files next to this page to start the game.</p>
   </div>
 </body>
 
