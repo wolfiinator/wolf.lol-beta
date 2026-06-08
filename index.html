@@ -1199,7 +1199,8 @@
 
         .interest-tab,
         .interest-character-tab,
-        .interest-game-tab {
+        .interest-game-tab,
+        .game-tab {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: rgba(255, 255, 255, 0.9);
@@ -1212,7 +1213,8 @@
 
         .interest-tab.active,
         .interest-character-tab.active,
-        .interest-game-tab.active {
+        .interest-game-tab.active,
+        .game-tab.active {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.8);
             color: #fff;
@@ -1330,6 +1332,103 @@
             font-size: 13px;
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.9);
+        }
+
+        .game-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .game-play-button,
+        .game-fullscreen-button,
+        .game-close-button {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Minecraftia', monospace;
+            font-size: 12px;
+            padding: 8px 14px;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .game-play-button:hover,
+        .game-fullscreen-button:hover,
+        .game-close-button:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.85);
+            transform: translateY(-1px);
+        }
+
+        .game-play-button {
+            background: color-mix(in srgb, var(--primary-color, #00CED1) 38%, rgba(255, 255, 255, 0.08));
+            border-color: color-mix(in srgb, var(--primary-color, #00CED1) 70%, rgba(255, 255, 255, 0.25));
+        }
+
+        .game-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+        }
+
+        .game-modal-panel {
+            width: min(1100px, 96vw);
+            height: min(760px, 88vh);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 18px;
+            background: rgba(7, 7, 10, 0.96);
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58), 0 0 28px color-mix(in srgb, var(--primary-color, #00CED1) 24%, transparent);
+        }
+
+        .game-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .game-modal-title {
+            font-size: 14px;
+        }
+
+        .game-modal-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .game-frame {
+            width: 100%;
+            flex: 1;
+            border: 0;
+            background: #333;
+        }
+
+        .game-modal-panel:fullscreen,
+        .game-modal-panel:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            border: 0;
+        }
+
+        .game-modal-panel:fullscreen .game-modal-header,
+        .game-modal-panel:-webkit-full-screen .game-modal-header {
+            background: rgba(0, 0, 0, 0.82);
         }
 
         .skill {
@@ -1718,6 +1817,25 @@
                 width: 100%;
             }
 
+            .game-modal {
+                padding: 10px;
+            }
+
+            .game-modal-panel {
+                width: 100%;
+                height: 92vh;
+            }
+
+            .game-modal-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .game-modal-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
             .preset-list {
                 grid-template-columns: 1fr;
             }
@@ -1930,8 +2048,31 @@
                 <div class="more-options">
                     <button id="open-more-music" class="more-option" type="button">Music Player</button>
                     <button id="open-more-interests" class="more-option" type="button">Interests</button>
+                    <button id="open-more-games" class="more-option" type="button">Games</button>
                     <button id="open-more-presets" class="more-option" type="button">Presets</button>
                     <button id="open-more-messages" class="more-option" type="button">Messages</button>
+                </div>
+            </div>
+            <div id="more-games-view" class="more-view hidden">
+                <button id="more-games-back" class="subview-back" type="button">Back</button>
+                <h2 class="skills-title">Games</h2>
+                <div class="interest-list">
+                    <div class="interest-tab-row">
+                        <div class="interest-tabs" role="tablist" aria-label="Playable games">
+                            <button class="game-tab active" data-game="bitlife" role="tab" aria-selected="true">BitLife</button>
+                        </div>
+                        <div class="interests-next-wrap" aria-hidden="true"></div>
+                    </div>
+                    <div class="interest-item">
+                        <img id="game-image" src="assets/bitlife.svg" alt="BitLife artwork">
+                        <div class="interest-copy">
+                            <h3 id="game-name">BitLife</h3>
+                            <p id="game-description">Live a whole simulated life one choice at a time, from childhood decisions to careers, relationships, fame, trouble, and everything in between.</p>
+                            <div class="game-actions">
+                                <button id="game-play" class="game-play-button" type="button">Play</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="more-messages-view" class="more-view more-messages-view hidden">
@@ -2094,6 +2235,19 @@
             </div>
         </div>
 
+
+        <div id="game-modal" class="game-modal hidden" role="dialog" aria-modal="true" aria-labelledby="game-modal-title">
+            <div id="game-modal-panel" class="game-modal-panel">
+                <div class="game-modal-header">
+                    <strong id="game-modal-title" class="game-modal-title">BitLife</strong>
+                    <div class="game-modal-actions">
+                        <button id="game-fullscreen" class="game-fullscreen-button" type="button">Fullscreen</button>
+                        <button id="game-close" class="game-close-button" type="button">Close</button>
+                    </div>
+                </div>
+                <iframe id="game-frame" class="game-frame" title="BitLife game" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe>
+            </div>
+        </div>
 
         <div class="theme-loop-indicator" aria-hidden="true"></div>
 

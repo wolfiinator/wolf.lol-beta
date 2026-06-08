@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreHomeView = document.getElementById('more-home-view');
   const morePresetsView = document.getElementById('more-presets-view');
   const moreMusicView = document.getElementById('more-music-view');
+  const moreGamesView = document.getElementById('more-games-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
   const moreInterestsGamesView = document.getElementById('more-interests-games-view');
@@ -53,11 +54,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const musicArtistHeading = document.getElementById('music-artist-heading');
   const musicArtistBackButton = document.getElementById('music-artist-back');
   const openMoreMusicButton = document.getElementById('open-more-music');
+  const openMoreGamesButton = document.getElementById('open-more-games');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const openMorePresetsButton = document.getElementById('open-more-presets');
   const openMoreMessagesButton = document.getElementById('open-more-messages');
   const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
+  const moreGamesBackButton = document.getElementById('more-games-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
   const moreInterestsGamesBackButton = document.getElementById('more-interests-games-back');
@@ -88,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestTabs = document.querySelectorAll('.interest-tab');
   const interestCharacterTabs = document.querySelectorAll('.interest-character-tab');
   const interestGameTabs = document.querySelectorAll('.interest-game-tab');
+  const gameTabs = document.querySelectorAll('.game-tab');
   const presetButtons = document.querySelectorAll('.preset-card');
   const interestsNextPageButton = document.getElementById('interests-next-page');
   const characterInterestsNextPageButton = document.getElementById('character-interests-next-page');
@@ -100,6 +104,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestGameImage = document.getElementById('interest-game-image');
   const interestGameName = document.getElementById('interest-game-name');
   const interestGameDescription = document.getElementById('interest-game-description');
+  const gameImage = document.getElementById('game-image');
+  const gameName = document.getElementById('game-name');
+  const gameDescription = document.getElementById('game-description');
+  const gamePlayButton = document.getElementById('game-play');
+  const gameModal = document.getElementById('game-modal');
+  const gameModalPanel = document.getElementById('game-modal-panel');
+  const gameModalTitle = document.getElementById('game-modal-title');
+  const gameFrame = document.getElementById('game-frame');
+  const gameFullscreenButton = document.getElementById('game-fullscreen');
+  const gameCloseButton = document.getElementById('game-close');
   const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
   const discordAvatar = document.getElementById('discord-avatar');
   const discordLabel = document.getElementById('discord-label');
@@ -258,6 +272,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       image: 'assets/chilloutvr.png',
       alt: 'ChilloutVR artwork',
       description: 'ChilloutVR is a social sandbox game enabling players and content creators to create, share and explore content in a massive multiplayer metaverse alone, with friends or anyone around the world. Meet new people and explore virtual worlds together.'
+    }
+  };
+
+  const gamesContent = {
+    bitlife: {
+      name: 'BitLife',
+      image: 'assets/bitlife.svg',
+      alt: 'BitLife artwork',
+      description: 'Live a whole simulated life one choice at a time, from childhood decisions to careers, relationships, fame, trouble, and everything in between.',
+      url: 'games/bitlife/index.html'
     }
   };
 
@@ -1273,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, morePresetsView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, morePresetsView, moreMusicView, moreGamesView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
@@ -1327,6 +1351,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (openMoreGamesButton) {
+    openMoreGamesButton.addEventListener('click', () => {
+      showMoreSubview(moreGamesView);
+      updateGameTab('bitlife');
+    });
+  }
+
   if (openMoreInterestsButton) {
     openMoreInterestsButton.addEventListener('click', () => {
       showMoreSubview(moreInterestsView);
@@ -1360,6 +1391,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (moreGamesBackButton) {
+    moreGamesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
+  }
+
   if (moreInterestsBackButton) {
     moreInterestsBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
   }
@@ -1374,6 +1409,72 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (moreInterestsGamesBackButton) {
     moreInterestsGamesBackButton.addEventListener('click', () => showMoreSubview(moreInterestsCharactersView));
+  }
+
+  let activeGameKey = 'bitlife';
+
+  function updateGameTab(gameKey) {
+    const game = gamesContent[gameKey];
+    if (!game || !gameImage || !gameName || !gameDescription) return;
+    activeGameKey = gameKey;
+
+    const applyGame = () => {
+      gameImage.src = game.image;
+      gameImage.alt = game.alt;
+      gameName.textContent = game.name;
+      gameDescription.textContent = game.description;
+      const gameItem = gameImage.closest('.interest-item');
+      if (gameItem) {
+        gsap.fromTo(gameItem, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.24, ease: 'power2.out' });
+      }
+    };
+
+    const gameItem = gameImage.closest('.interest-item');
+    if (gameItem) {
+      gsap.to(gameItem, {
+        autoAlpha: 0,
+        y: -6,
+        duration: 0.15,
+        ease: 'power2.in',
+        onComplete: applyGame
+      });
+    } else {
+      applyGame();
+    }
+
+    gameTabs.forEach((tab) => {
+      const isActive = tab.dataset.game === gameKey;
+      tab.classList.toggle('active', isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
+  }
+
+  function openPlayableGame(gameKey = activeGameKey) {
+    const game = gamesContent[gameKey];
+    if (!game || !gameModal || !gameFrame) return;
+    activeGameKey = gameKey;
+    if (gameModalTitle) gameModalTitle.textContent = game.name;
+    gameFrame.src = game.url;
+    gameFrame.title = `${game.name} game`;
+    gameModal.classList.remove('hidden');
+  }
+
+  function closePlayableGame() {
+    if (!gameModal || !gameFrame) return;
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+    gameModal.classList.add('hidden');
+    gameFrame.src = 'about:blank';
+  }
+
+  function fullscreenPlayableGame() {
+    if (!gameModalPanel) return;
+    if (gameModalPanel.requestFullscreen) {
+      gameModalPanel.requestFullscreen();
+    } else if (gameModalPanel.webkitRequestFullscreen) {
+      gameModalPanel.webkitRequestFullscreen();
+    }
   }
 
   function updateInterestTab(interestKey) {
@@ -1490,6 +1591,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  gameTabs.forEach((tab) => {
+    tab.addEventListener('click', () => updateGameTab(tab.dataset.game));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateGameTab(tab.dataset.game);
+    });
+  });
+
+  if (gamePlayButton) {
+    gamePlayButton.addEventListener('click', () => openPlayableGame(activeGameKey));
+  }
+
+  if (gameCloseButton) {
+    gameCloseButton.addEventListener('click', closePlayableGame);
+  }
+
+  if (gameFullscreenButton) {
+    gameFullscreenButton.addEventListener('click', fullscreenPlayableGame);
+  }
+
+  if (gameModal) {
+    gameModal.addEventListener('click', (event) => {
+      if (event.target === gameModal) closePlayableGame();
+    });
+  }
+
   interestTabs.forEach((tab) => {
     tab.addEventListener('click', () => updateInterestTab(tab.dataset.interest));
     tab.addEventListener('touchstart', (e) => {
@@ -1529,6 +1656,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   updateInterestTab('beastars');
+  updateGameTab('bitlife');
   updateCharacterInterestTab('mr-wolf');
   updateGameInterestTab('vrchat');
   renderArtistList();
