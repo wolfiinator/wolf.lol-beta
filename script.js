@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moreHomeView = document.getElementById('more-home-view');
   const morePresetsView = document.getElementById('more-presets-view');
   const moreMusicView = document.getElementById('more-music-view');
+  const moreMoviesView = document.getElementById('more-movies-view');
   const moreInterestsView = document.getElementById('more-interests-view');
   const moreInterestsCharactersView = document.getElementById('more-interests-characters-view');
   const moreInterestsGamesView = document.getElementById('more-interests-games-view');
@@ -53,11 +54,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const musicArtistHeading = document.getElementById('music-artist-heading');
   const musicArtistBackButton = document.getElementById('music-artist-back');
   const openMoreMusicButton = document.getElementById('open-more-music');
+  const openMoreMoviesButton = document.getElementById('open-more-movies');
   const openMoreInterestsButton = document.getElementById('open-more-interests');
   const openMorePresetsButton = document.getElementById('open-more-presets');
   const openMoreMessagesButton = document.getElementById('open-more-messages');
   const morePresetsBackButton = document.getElementById('more-presets-back');
   const moreMusicBackButton = document.getElementById('more-music-back');
+  const moreMoviesBackButton = document.getElementById('more-movies-back');
   const moreInterestsBackButton = document.getElementById('more-interests-back');
   const moreInterestsCharactersBackButton = document.getElementById('more-interests-characters-back');
   const moreInterestsGamesBackButton = document.getElementById('more-interests-games-back');
@@ -100,6 +103,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const interestGameImage = document.getElementById('interest-game-image');
   const interestGameName = document.getElementById('interest-game-name');
   const interestGameDescription = document.getElementById('interest-game-description');
+  const movieStatus = document.getElementById('movie-status');
+  const movieOpenVrButton = document.getElementById('movie-open-vr');
+  const movieReloadVrButton = document.getElementById('movie-reload-vr');
+  const movieFrame = document.getElementById('movie-frame');
   const equalizerBars = musicEqualizer ? Array.from(musicEqualizer.querySelectorAll('span')) : [];
   const discordAvatar = document.getElementById('discord-avatar');
   const discordLabel = document.getElementById('discord-label');
@@ -462,11 +469,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       startIndex++;
     }
     startText.textContent = startTextContent + (startCursorVisible ? '|' : ' ');
-    if (startIndex < startMessage.length) setTimeout(typeWriterStart, 100);
+    setTimeout(typeWriterStart, 100);
   }
 
 
-  const startBlink = setInterval(() => {
+  setInterval(() => {
     startCursorVisible = !startCursorVisible;
     startText.textContent = startTextContent + (startCursorVisible ? '|' : ' ');
   }, 500);
@@ -708,30 +715,67 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
 
-  let entered = false;
-  function enterSite() {
-    if (entered) return;
-    entered = true;
-    clearInterval(startBlink);
-    startScreen.classList.add('leaving');
-    setTimeout(() => startScreen.classList.add('hidden'), 650);
-    currentAudio.muted = isMuted;
-    currentAudio.volume = 0;
-    currentAudio.play().catch(err => console.error('Failed to play music:', err));
-    gsap.to(currentAudio, { volume: Number(volumeSlider.value), duration: 2.5, ease: 'power1.out' });
+  startScreen.addEventListener('click', () => {
+    startScreen.classList.add('hidden');
+    currentAudio.muted = false;
+    currentAudio.play().catch(err => {
+      console.error("Failed to play music after start screen click:", err);
+    });
     profileBlock.classList.remove('hidden');
     gsap.fromTo(profileBlock,
-      { opacity: 0, y: 28, scale: 0.97 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' });
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power2.out', onComplete: () => {
+        profileBlock.classList.add('profile-appear');
+        
+      }}
+    );
+    if (!isTouchDevice) {
+      try {
+        new cursorTrailEffect({
+          length: 10,
+          size: 8,
+          speed: 0.2
+        });
+        console.log("Cursor trail initialized");
+      } catch (err) {
+        console.error("Failed to initialize cursor trail effect:", err);
+      }
+    }
     typeWriterName();
     typeWriterBio();
-  }
-  startScreen.tabIndex = 0;
-  startScreen.setAttribute('role', 'button');
-  startScreen.addEventListener('click', enterSite);
-  startScreen.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterSite(); }
   });
+
+  startScreen.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startScreen.classList.add('hidden');
+    currentAudio.muted = false;
+    currentAudio.play().catch(err => {
+      console.error("Failed to play music after start screen touch:", err);
+    });
+    profileBlock.classList.remove('hidden');
+    gsap.fromTo(profileBlock,
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power2.out', onComplete: () => {
+        profileBlock.classList.add('profile-appear');
+        
+      }}
+    );
+    if (!isTouchDevice) {
+      try {
+        new cursorTrailEffect({
+          length: 10,
+          size: 8,
+          speed: 0.2
+        });
+        console.log("Cursor trail initialized");
+      } catch (err) {
+        console.error("Failed to initialize cursor trail effect:", err);
+      }
+    }
+    typeWriterName();
+    typeWriterBio();
+  });
+
 
   const name = "wolf.";
   let nameText = '';
@@ -890,6 +934,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   presetButtons.forEach((button) => {
     const selectPreset = () => applyProfilePreset(button.dataset.preset);
     button.addEventListener('click', selectPreset);
+    button.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      selectPreset();
+    });
   });
 
   let currentAudio = musicPlayer;
@@ -916,6 +964,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   playTrackForTheme('home-theme');
 
   volumeIcon.addEventListener('click', () => {
+    isMuted = !isMuted;
+    currentAudio.muted = isMuted;
+    if (albumPlayer) {
+      albumPlayer.muted = isMuted;
+    }
+    volumeIcon.innerHTML = isMuted
+      ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`
+      : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
+  });
+
+  volumeIcon.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     isMuted = !isMuted;
     currentAudio.muted = isMuted;
     if (albumPlayer) {
@@ -1006,11 +1066,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.documentElement.style.setProperty('--secondary-color', activePreset.secondaryColor);
     }
 
-    const nextBackground = profilePresets[activePresetKey]?.background || videoSrc;
-    const sameBackground = (backgroundVideo.currentSrc || '').endsWith(nextBackground);
-    const applyTheme = () => {
-      {
+    gsap.to(backgroundVideo, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.in',
+      onComplete: () => {
         setBackgroundSource(profilePresets[activePresetKey]?.background || videoSrc);
+
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
         if (!albumPlayer || albumPlayer.paused) {
           playTrackForTheme(themeClass);
         }
@@ -1025,11 +1091,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (overlay) {
           overlay.classList.remove('hidden');
         }
-        if (!sameBackground) gsap.to(backgroundVideo, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+
+        gsap.to(backgroundVideo, {
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          onComplete: () => {
+            
+          }
+        });
       }
-    };
-    if (sameBackground) applyTheme();
-    else gsap.to(backgroundVideo, { opacity: 0, duration: 0.35, ease: 'power2.in', onComplete: applyTheme });
+    });
   }
 
 
@@ -1068,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mouseX = clientX - centerX;
     const mouseY = clientY - centerY;
 
-    const maxTilt = 5;
+    const maxTilt = 15;
     const tiltX = (mouseY / rect.height) * maxTilt;
     const tiltY = -(mouseX / rect.width) * maxTilt;
 
@@ -1083,8 +1155,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   profileBlock.addEventListener('mousemove', (e) => handleTilt(e, profileBlock));
+  profileBlock.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    handleTilt(e, profileBlock);
+  });
 
   skillsBlock.addEventListener('mousemove', (e) => handleTilt(e, skillsBlock));
+  skillsBlock.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    handleTilt(e, skillsBlock);
+  });
 
   profileBlock.addEventListener('mouseleave', () => {
     gsap.to(profileBlock, {
@@ -1151,10 +1231,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   profilePicture.addEventListener('click', boostOrbit);
 
+  profilePicture.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    boostOrbit();
+  });
+
   updateDiscordPresence();
-  setInterval(() => { if (!document.hidden) updateDiscordPresence(); }, 30000);
+  setInterval(updateDiscordPresence, 30000);
 
  
+  const movieEmbedUrl = 'https://vr-m.net/';
+
+  function setMovieStatus(message, isError = false) {
+    if (!movieStatus) return;
+    movieStatus.textContent = message;
+    movieStatus.style.color = isError ? '#ffb4b4' : 'rgba(255, 255, 255, 0.78)';
+  }
+
+  function reloadMovieEmbed() {
+    if (!movieFrame) return;
+    movieFrame.src = movieEmbedUrl;
+    setMovieStatus('Reloaded the embedded vr-m.net page.');
+  }
+
   let activeMoreSubview = moreHomeView;
 
   function showMoreSubview(targetView) {
@@ -1185,38 +1284,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  let moreSwitching = false;
-
   function openMoreView() {
-    if (moreSwitching) return;
-    moreSwitching = true;
     localStorage.setItem(presetStorageKey, activePresetKey);
     gsap.to(profileBlock, {
-      x: -36,
+      x: -100,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.5,
       ease: 'power2.in',
       onComplete: () => {
         profileBlock.classList.add('hidden');
         skillsBlock.classList.remove('hidden');
-        [moreHomeView, morePresetsView, moreMusicView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
+        [moreHomeView, morePresetsView, moreMusicView, moreMoviesView, moreInterestsView, moreInterestsCharactersView, moreInterestsGamesView, moreMessagesView].forEach((view) => view && view.classList.add('hidden'));
         activeMoreSubview = null;
         showMoreSubview(moreHomeView);
         gsap.fromTo(skillsBlock,
-          { x: 36, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.4, ease: 'power3.out', onComplete: () => { moreSwitching = false; } }
+          { x: 100, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
         );
       }
     });
   }
 
   function closeMoreView() {
-    if (moreSwitching) return;
-    moreSwitching = true;
     gsap.to(skillsBlock, {
-      x: 36,
+      x: 100,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.5,
       ease: 'power2.in',
       onComplete: () => {
         skillsBlock.classList.add('hidden');
@@ -1224,8 +1317,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         showMusicArtistList();
         showMoreSubview(moreHomeView);
         gsap.fromTo(profileBlock,
-          { x: -36, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.4, ease: 'power3.out', onComplete: () => { moreSwitching = false; } }
+          { x: -100, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
         );
       }
     });
@@ -1233,10 +1326,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (openMoreButton) {
     openMoreButton.addEventListener('click', openMoreView);
+    openMoreButton.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      openMoreView();
+    });
   }
 
   if (closeMoreButton) {
     closeMoreButton.addEventListener('click', closeMoreView);
+    closeMoreButton.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      closeMoreView();
+    });
   }
 
 
@@ -1247,6 +1348,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (openMoreMoviesButton) {
+    openMoreMoviesButton.addEventListener('click', () => showMoreSubview(moreMoviesView));
+  }
 
   if (openMoreInterestsButton) {
     openMoreInterestsButton.addEventListener('click', () => {
@@ -1281,6 +1385,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (moreMoviesBackButton) {
+    moreMoviesBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
+  }
 
   if (moreInterestsBackButton) {
     moreInterestsBackButton.addEventListener('click', () => showMoreSubview(moreHomeView));
@@ -1412,17 +1519,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  if (movieReloadVrButton) {
+    movieReloadVrButton.addEventListener('click', reloadMovieEmbed);
+  }
+
+  if (movieOpenVrButton) {
+    movieOpenVrButton.addEventListener('click', () => {
+      window.open(movieEmbedUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
 
   interestTabs.forEach((tab) => {
     tab.addEventListener('click', () => updateInterestTab(tab.dataset.interest));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateInterestTab(tab.dataset.interest);
+    });
   });
 
   interestCharacterTabs.forEach((tab) => {
     tab.addEventListener('click', () => updateCharacterInterestTab(tab.dataset.characterInterest));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateCharacterInterestTab(tab.dataset.characterInterest);
+    });
   });
 
   interestGameTabs.forEach((tab) => {
     tab.addEventListener('click', () => updateGameInterestTab(tab.dataset.gameInterest));
+    tab.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateGameInterestTab(tab.dataset.gameInterest);
+    });
   });
 
   if (interestsNextPageButton) {
@@ -1509,13 +1637,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const glow = document.querySelector('.cursor-glow');
-  if (glow && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const gx = gsap.quickTo(glow, 'x', { duration: 0.6, ease: 'power3.out' });
-    const gy = gsap.quickTo(glow, 'y', { duration: 0.6, ease: 'power3.out' });
-    window.addEventListener('mousemove', (e) => { glow.classList.add('on'); gx(e.clientX); gy(e.clientY); }, { passive: true });
-    document.addEventListener('mouseleave', () => glow.classList.remove('on'));
-  }
 
   typeWriterStart();
 });
